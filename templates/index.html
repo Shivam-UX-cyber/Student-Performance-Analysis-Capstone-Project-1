@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSight</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon32.png') }}" type="image/png">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">Edu<span>Sight</span></div>
+        <nav class="nav-links" id="navLinks">
+            <a href="#">About</a>
+            <a href="#">Docs</a>
+            <a href="#">Support</a>
+            <button class="sign-in">Sign In</button>
+        </nav>
+        <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+    </header>
+
+    <main class="main-content">
+        <section class="text-section">
+            <h1>Track <span class="highlight">Analyze</span> Improve</h1>
+            <div class="divider"></div>
+            <p>EduSight is a powerful tool designed to help students and educators track academic performance, analyze
+                data, and improve learning outcomes.</p>
+            <p>Our platform provides a comprehensive suite of features that allow users to monitor progress, identify
+                areas for improvement, and implement effective strategies for success.</p>
+            <div class="divider"></div>
+            <h2>Key Features :</h2>
+            <p>Transforming Student Data into <span class="highlight-text">Actionable Academic Strategies</span></p>
+            <button class="learn-more">Learn More</button>
+        </section>
+
+        <section class="image-section">
+            <img src="{{ url_for('static', filename='Landing_page.png') }}" alt="Landing Page Illustration">
+            <h2 class="bottom-logo">Edu<span>Sight</span></h2>
+        </section>
+    </main>
+
+
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById('navLinks');
+            nav.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>
