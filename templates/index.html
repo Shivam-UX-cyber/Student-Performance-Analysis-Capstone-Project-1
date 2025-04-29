@@ -6,12 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Students Performance Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='favicon32.png') }}" type="image/png">
+    <link rel="icon" href="{{ url_for('static', filename='logo_capstone 1.png') }}" type="image/png">
 </head>
 
 <body>
     <header class="navbar">
-        <div class="logo">Students <span>Performance</span> Analysis</div>
+        <div class="logo">
+            Students <span>Performance</span> Analysis
+            <span class="logo-img-wrapper">
+                <img src="{{ url_for('static', filename='logo_capstone 1.png') }}" alt="EduSight Logo" class="logo-img">
+            </span>
+        </div>
         <nav class="nav-links" id="navLinks">
             <a href="#">About</a>
             <a href="#">Docs</a>
@@ -22,10 +27,12 @@
     </header>
 
     <main class="main-content">
+
         <section class="text-section">
             <h1>Track <span class="highlight">Analyze</span> Improve</h1>
             <div class="divider"></div>
-            <p>"Students Performance Analysis" is a powerful tool designed to help students and educators track academic performance, analyze
+            <p>"Students Performance Analysis" is a powerful tool designed to help students and educators track academic
+                performance, analyze
                 data, and improve learning outcomes.</p>
             <p>Our platform provides a comprehensive suite of features that allow users to monitor progress, identify
                 areas for improvement, and implement effective strategies for success.</p>
