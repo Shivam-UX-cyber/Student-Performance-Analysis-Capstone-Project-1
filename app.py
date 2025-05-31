@@ -20,5 +20,13 @@ def docs():
 def signin():
     return render_template('signin.html')
 
+@app.route('/support')
+def support():
+    return render_template('support.html')
+
+@app.route('/learn_more')
+def learn_more():
+    return render_template('learn_more.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
