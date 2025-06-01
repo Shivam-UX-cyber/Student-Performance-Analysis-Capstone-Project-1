@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('home') }}">
+        <button class="go-back-btn">⬅ Go Back to Home</button>
+    </a>
+</div>
+
+<main class="main-content">
+    <section class="text-section">
+        <h1>Project <span class="highlight">Documentation</span></h1>
+        <div class="divider"></div>
+        <p>Here you’ll find project flow, data structure, and module descriptions.</p>
+        <ul style="margin-top: 20px; font-size: 18px;">
+            <li>✔️ Data Collection Format</li>
+            <li>✔️ ML Model Building Process</li>
+            <li>✔️ Web Frontend Structure</li>
+            <li>✔️ Backend (Flask + SQL)</li>
+            <li>✔️ Deployment Instructions</li>
+        </ul>
+    </section>
+</main>
+{% endblock %}

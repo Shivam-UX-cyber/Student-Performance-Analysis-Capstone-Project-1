@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('home') }}">
+        <button class="go-back-btn">⬅ Go Back to Home</button>
+    </a>
+</div>
+
+<main class="main-content">
+    <section class="text-section">
+        <h1>Learn <span class="highlight">More</span></h1>
+        <div class="divider"></div>
+        <p>Students Performance Analysis is more than just marks tracking. It uses psychological, social, and academic factors to offer deep insights into a student’s learning journey.</p>
+        <p>By combining data science and education, this tool guides students with actionable suggestions for growth and success.</p>
+        <h2>Explore Features:</h2>
+        <ul style="font-size: 18px;">
+            <li>📈 Personalized performance graphs</li>
+            <li>🧠 Smart prediction with ML</li>
+            <li>🎯 Study habit tips</li>
+            <li>❤️ Motivation & Feedback section</li>
+        </ul>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('home') }}">
+        <button class="go-back-btn">⬅ Go Back to Home</button>
+    </a>
+</div>
+
+<main class="main-content">
+    <section class="text-section">
+        <h1>Need <span class="highlight">Help?</span></h1>
+        <div class="divider"></div>
+        <p>If you have any questions, feedback, or technical issues, feel free to reach out to our team.</p>
+        <ul style="font-size: 18px; margin-top: 20px;">
+            <li>📧 Email: support@studentanalysis.com</li>
+            <li>📞 Phone: +91-98765-43210</li>
+            <li>📍 Location: Begusarai, Bihar</li>
+        </ul>
+    </section>
+</main>
+{% endblock %}
