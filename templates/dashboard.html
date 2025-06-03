@@ -1,35 +1,30 @@
 {% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
 {% block content %}
 
-<main class="main-content">
-
-    <h1 class="dashboard-heading">Dashboard</h1>
-
-    <div class="top-bar">
-
-
-
-
-
-        <div class="profile-box">
-            <h2>Welcome, {{ name }} 👋</h2>
-            <p>Email: {{ email }}</p>
-        </div>
-
-        <div class="dropdown">
-            <button class="dropbtn"> ☰ </button>
-            <div class="dropdown-content">
-                <a href="#">👤 View Profile</a>
-                <a href="#">📈 Performance Analysis</a>
-                <a href="#">📝 Update Info</a>
-                <a href="#">🧠 AI Prediction</a>
-                <a href="#">💬 Feedback</a>
-                <a href="{{ url_for('logout') }}">🚪 Logout</a>
+<div class="dashboard-bg">
+    <div class="dashboard-main-box">
+        <h1>Dashboard</h1>
+        <div class="top-bar">
+            <div class="profile-box">
+                <h2>Welcome, {{ name }} 👋</h2>
+                <p>Email: {{ email }}</p>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn"> ☰ </button>
+                <div class="dropdown-content">
+                    <a href="#">👤 View Profile</a>
+                    <a href="#">📈 Performance Analysis</a>
+                    <a href="#">📝 Update Info</a>
+                    <a href="#">🧠 AI Prediction</a>
+                    <a href="#">💬 Feedback</a>
+                    <a href="{{ url_for('logout') }}">🚪 Logout</a>
+                </div>
             </div>
         </div>
-
-
-
+        <!-- Add more dashboard content here -->
     </div>
-</main>
+</div>
 {% endblock %}

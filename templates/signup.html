@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+{% endblock %}
+{% block content %}
+
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('home') }}">
+        <button class="go-back-btn">⬅ Go Back to Home</button>
+    </a>
+</div>
+
+<div class="auth-container">
+    <h2>Create Account</h2>
+    <form method="POST" class="signup-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Create Password:</label>
+        <input type="password" id="password" name="password"
+            pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$"
+            title="Minimum 6 characters, at least one letter, one number, and one special character"
+            required>
+
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+
+        <button type="submit">Send OTP</button>
+    </form>
+    <div class="form-link">
+        Already have an account? <a href="{{ url_for('signin') }}">Sign In</a>
+    </div>
+</div>
+
+<script>
+document.querySelector('.signup-form').onsubmit = function(e) {
+    const pwd = document.querySelector('input[name="password"]').value;
+    const cpwd = document.querySelector('input[name="confirm_password"]').value;
+    if (pwd !== cpwd) {
+        alert("Passwords do not match!");
+        e.preventDefault();
+    }
+};
+</script>
+
+{% endblock %}

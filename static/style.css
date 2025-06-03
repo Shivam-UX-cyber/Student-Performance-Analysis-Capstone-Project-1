@@ -279,160 +279,166 @@ body {
     background-color: #785a5a;
 }
 
-/* Dropdown container */
+/* Dashboard Styles */
+.gray-bg {
+    background: #2e2e2ee7 !important; /* soft white-gray */
+}
+
+/* Fullscreen Dashboard Container */
+.dashboard-bg {
+    min-height: 100vh;
+    /* width: 100vw;  <-- Remove this line */
+    background: #2e2e2ee7 !important; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Main White Box */
+.dashboard-main-box {
+    width: 98vw;               /* Make it almost full screen width */
+    max-width: 1800px;         /* Allow it to be very wide on large screens */
+    min-height: 98vh;
+    background: linear-gradient(120deg, #e3f0ff 0%, #7198bf 100%);
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(26, 115, 232, 0.13);
+    padding: 40px 2vw 32px 2vw; /* Use vw for side padding for responsiveness */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 1vw auto;
+    box-sizing: border-box;    /* Ensure padding is included in width */
+}
+
+/* Dashboard Heading */
+.dashboard-main-box h1 {
+    color: #1761c6;
+    font-size: 2.7rem;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+}
+
+/* Top Bar */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    margin-bottom: 24px;
+}
+
+/* Profile Box */
+.profile-box {
+    background:  #2e2e2ee7;
+    color: #fff;
+    border-radius: 12px;
+    padding: 28px 32px 20px 32px;
+    box-shadow: 0 2px 12px rgba(216, 173, 15, 0.08);
+    min-width: 260px;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.profile-box h2 {
+    margin-bottom: 8px;
+    font-size: 1.3rem;
+    color: #ffe066;
+}
+.profile-box p {
+    margin: 0;
+    color: #ffe066;
+    font-size: 1rem;
+}
+
+/* Dropdown Menu */
 .dropdown {
     position: relative;
-    display: inline-block;
-    margin: 20px;
-    z-index: 999;
-    margin-top: 5px;
-
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 180px;
 }
-
-/* Three-dot button */
 .dropbtn {
-    background: none;
+    background: #ffe066;
+    color: #222;
+    padding: 14px 28px;
+    font-size: 1.2rem;
     border: none;
-    font-size: 20px;
+    border-radius: 10px;
     cursor: pointer;
-    color: white;
-    background-color: #d8ad0f;
-    padding: 10px 14px;
-    border-radius: 6px;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(255, 214, 10, 0.07);
+    margin-bottom: 8px;
+    transition: background 0.2s;
 }
-
-/* Dropdown content */
+.dropbtn:hover {
+    background: #ffd60a;
+}
 .dropdown-content {
     display: none;
     position: absolute;
     right: 0;
-    background-color: #f9f9f9;
-    color: black;
-    border: 1px solid #444;
-    animation: fadeInDropdown 0.3s ease-in-out;
+    background: #232323;
+    min-width: 220px;
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.09);
+    border-radius: 10px;
     z-index: 1;
-    margin-top: 10px;
-    min-width: 180px;
-    border-radius: 6px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    margin-top: 8px;
     overflow: hidden;
 }
-
-/* Dropdown links */
 .dropdown-content a {
-    background-color: #f9f9f9; /* Light background for dropdown items */
-    transition: background 0.3s;
-    font-size: 16px;
-    border-bottom: 1px solid #333;
-    color: #333;
-    text-decoration: none; 
-    padding: 12px 16px;
+    color: #ffe066;
+    padding: 16px 24px;
     text-decoration: none;
     display: block;
+    font-size: 1.08rem;
+    transition: background 0.2s, color 0.2s;
 }
-
-.dropdown-content a:last-child {
-    border-bottom: none;
-}
-
 .dropdown-content a:hover {
-    background-color: #d94c4c;
+    background: #ffe066;
+    color: #232323;
 }
-
-/* Show dropdown on hover */
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-/* Optional: Dropdown fade-in animation */
-@keyframes fadeInDropdown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.dashboard-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 10px 5%;
-    margin-top: -30px; /* Moves both elements up */
-}
-
-.profile-card {
-    margin: 0;
-     background-color: #3a3a3a;
-    padding: 15px;
-    border-radius: 10px;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.dashboard-top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 10px 5%;
-    margin-top: -30px;
-    /* Move upwards */
-}
-
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #2e2e2e;
-    margin-top: -20px;
-    /* Move the entire bar upward */
-    padding: 20px 40px;
-}
-
-.profile-box {
-    background-color: #3a3a3a;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.dropdown:hover .dropbtn {
-    background-color: #2d9183;
-}
-
 /* Responsive Design */
-@media (max-width: 768px) {
-    .dashboard-header {
+@media (max-width: 1100px) {
+    .dashboard-main-box {
+        padding: 24px 8vw;
+    }
+    .top-bar {
         flex-direction: column;
-        align-items: flex-start;
+        gap: 24px;
     }
-
-    .profile-card {
+    .profile-box {
         width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .dropdown {
-        width: 100%;
-    }
-
-    .dropbtn {
-        width: 100%;
-        text-align: left;
+        max-width: 100%;
     }
 }
-
-
-.dashboard-heading {
-    font-size: 60px;
-    color: #d6f60b;
-    text-align: left !important;
-    margin: 30px 40px 10px;
-    font-weight: bold;
+@media (max-width: 700px) {
+    .dashboard-main-box {
+        padding: 10px 2vw;
+    }
+    .dashboard-main-box h1 {
+        font-size: 1.5rem;
+        margin-bottom: 18px;
+    }
+    .profile-box {
+        padding: 18px 10px 12px 10px;
+    }
+    .dropbtn {
+        padding: 10px 14px;
+        font-size: 1rem;
+    }
+    .dropdown-content a {
+        padding: 12px 12px;
+        font-size: 1rem;
+    }
 }

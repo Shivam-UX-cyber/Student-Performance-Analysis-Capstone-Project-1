@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+<div class="auth-container">
+    <h2>All Users</h2>
+    <table style="width:100%; border-collapse:collapse;">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Admin?</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2 style="margin-top:30px;">Login Logs</h2>
+    <table style="width:100%; border-collapse:collapse;">
+        <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Login Time</th>
+        </tr>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.user.name if log.user else 'Unknown' }}</td>
+            <td>{{ log.user.email if log.user else 'Unknown' }}</td>
+            <td>{{ log.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

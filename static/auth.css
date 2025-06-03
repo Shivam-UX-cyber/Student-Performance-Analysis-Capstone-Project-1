@@ -1,0 +1,144 @@
+/* Authentication Page Styles */
+/* General Styles */
+body {
+    background: linear-gradient(120deg, #e3f0ff 0%, #7198bf 100%);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+
+.auth-container {
+    max-width: 400px;
+    padding: 24px 18px;
+}
+
+.auth-container, .main-content {
+    max-width: 340px;
+    margin: 12px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(26, 115, 232, 0.09);
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+h1, h2 {
+    color: #1761c6;
+    margin-bottom: 4px;
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+label {
+    margin-bottom: 1px;
+    color: #333;
+    font-size: 1rem;
+    padding: 2px 0;
+    display: block;
+    transition: color 0.2s;
+    font-weight: 600;
+}
+
+input[type="email"], input[type="password"], input[type="text"] {
+    width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 5px;
+    border: 1px solid #cfd8dc;
+    border-radius: 4px;
+    font-size: 0.97rem;
+    background: #f7fafc;
+    transition: border 0.2s;
+}
+
+input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
+    border: 1.5px solid #1761c6;
+    outline: none;
+    background: #fff;
+}
+
+button {
+    width: 100%;
+    background: linear-gradient(90deg, #ffe066 60%, #ffd60a 100%);
+    color: #222;
+    border: none;
+    padding: 7px 0;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    margin-bottom: 3px;
+    box-shadow: 0 1px 4px rgba(255, 214, 10, 0.07);
+}
+
+button:hover {
+    background: linear-gradient(90deg, #ffd60a 60%, #ffe066 100%);
+    color: #111;
+}
+
+a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.97rem;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a button {
+    background: none;
+    color: #1a73e8;
+    padding: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
+
+.form-link {
+    text-align: center;
+    margin-top: 2px;
+    font-size: 0.93rem;
+}
+
+.success-message {
+    color: #155724;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 6px 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.error-message {
+    color: #d93025;
+    background: #fbe9e7;
+    border: 1px solid #fbc2c0;
+    padding: 6px 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    text-align: center; 
+}
+
+/* Responsive for mobile */
+@media (max-width: 500px) {
+    .auth-container, .main-content {
+        max-width: 98vw;
+        margin: 4px auto;
+        padding: 4px 2px 6px 2px;
+    }
+    h1, h2 {
+        font-size: 1rem;
+    }
+    button {
+        font-size: 0.95rem;
+    }
+}

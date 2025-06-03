@@ -9,14 +9,46 @@
 
 <main class="main-content">
     <section class="text-section">
-        <h1>Need <span class="highlight">Help?</span></h1>
+        <h1>Support :</h1>
         <div class="divider"></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <p style="font-size:1.2rem; margin-bottom: 18px;">
+            Need help? We’re here for you!
+        </p>
         <p>If you have any questions, feedback, or technical issues, feel free to reach out to our team.</p>
+        <p>
         <ul style="font-size: 18px; margin-top: 20px;">
-            <li>📧 Email: support@studentanalysis.com</li>
+            <li><strong>📧Email:</strong> <a href="mailto:support@example.com"
+                    style="color:#1761c6;">support@example.com</a></li>
             <li>📞 Phone: +91-98765-43210</li>
             <li>📍 Location: Begusarai, Bihar</li>
         </ul>
+        </p>
+        <form method="POST" style="margin-top:24px; max-width:500px;">
+            <label for="support-email" style="font-weight:600;">Your Email:</label>
+            <input type="email" id="support-email" name="support-email" required
+                style="width:100%;padding:10px;margin-bottom:12px;border-radius:6px;border:1px solid #ccc;">
+            <label for="support-message" style="font-weight:600;">Message:</label>
+            <textarea id="support-message" name="support-message" rows="5" required
+                style="width:100%;padding:10px;border-radius:6px;border:1px solid #ccc;"></textarea>
+            <button type="submit" class="go-back-btn" style="margin-top:14px;">Send</button>
+        </form>
+        <p style="margin-top:24px; font-size:1.1rem;">
+            <strong>Response time:</strong> We aim to respond within 24 hours on weekdays.
+        </p>
+        <p style="margin-top:12px;">
+            <a href="{{ url_for('docs') }}" style="color:#1761c6;">Documentation</a> |
+            <a href="{{ url_for('docs') }}#faq" style="color:#1761c6;">FAQ</a>
+        </p>
+
+
+
     </section>
 </main>
 {% endblock %}
