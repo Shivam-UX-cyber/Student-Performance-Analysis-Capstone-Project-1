@@ -107,7 +107,7 @@ MIT License (add your license file if needed).
 
 ## 👨‍💻 Authors
 
-- [Shivam_642 Shivam_637 Shivam_642 Shiv_631]
+- [Shivam_642 Shivam_637 Shivam_644 Shiv_631]
 - IITP 2025 Capstone Project Team
 
 ---
