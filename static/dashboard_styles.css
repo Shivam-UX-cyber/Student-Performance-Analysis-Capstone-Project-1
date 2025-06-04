@@ -1,0 +1,93 @@
+/* Student Input Form Styles */
+.dashboard-main-box form {
+  max-width: 1100px;
+  width: 100%; 
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 28px 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.dashboard-main-box h2 {
+  margin-top: 24px;
+  color: #1761c6;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #f7cb08;
+  padding-bottom: 4px;
+}
+
+.dashboard-main-box label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #222;
+}
+
+.dashboard-main-box input[type="text"],
+.dashboard-main-box input[type="number"],
+.dashboard-main-box input[type="email"],
+.dashboard-main-box select,
+.dashboard-main-box textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f9fafb;
+  transition: border 0.2s;
+}
+
+.dashboard-main-box input[type="text"]:focus,
+.dashboard-main-box input[type="number"]:focus,
+.dashboard-main-box input[type="email"]:focus,
+.dashboard-main-box select:focus,
+.dashboard-main-box textarea:focus {
+  border: 1.5px solid #1761c6;
+  outline: none;
+}
+
+.dashboard-main-box input[type="checkbox"],
+.dashboard-main-box input[type="radio"] {
+  margin-right: 8px;
+  accent-color: #1761c6;
+}
+
+.dashboard-main-box button[type="submit"] {
+  background: linear-gradient(90deg, #1761c6 60%, #f7cb08 100%);
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dashboard-main-box button[type="submit"]:hover {
+  background: linear-gradient(90deg, #f7cb08 0%, #1761c6 100%);
+  color: #222;
+}
+
+.dashboard-main-box .go-back-btn {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: #1761c6;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+@media (max-width: 700px) {
+  .dashboard-main-box form {
+    padding: 18px 6px 12px 6px;
+  }
+}

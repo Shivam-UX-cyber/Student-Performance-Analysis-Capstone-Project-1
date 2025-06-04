@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+{% block content %}
+<div class="dashboard-bg">
+    <div class="dashboard-main-box">
+        <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
+        <h1>📈 Performance Analysis</h1>
+        <p>Here you will see your academic trends, subject-wise marks, and analytics charts.</p>
+        <!-- Insert charts/graphs here -->
+        
+    </div>
+</div>
+{% endblock %}

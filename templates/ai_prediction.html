@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="dashboard-bg">
+    <div class="dashboard-main-box">
+         <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
+        <h1>🧠 AI Prediction</h1>
+        <p>Your predicted performance will appear here based on your data and study habits.</p>
+        <!-- Show prediction results and suggestions -->  
+    </div>
+</div>
+{% endblock %}

@@ -12,11 +12,11 @@
         <h1>Support :</h1>
         <div class="divider"></div>
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
         <p style="font-size:1.2rem; margin-bottom: 18px;">
             Need help? We’re here for you!
@@ -46,9 +46,6 @@
             <a href="{{ url_for('docs') }}" style="color:#1761c6;">Documentation</a> |
             <a href="{{ url_for('docs') }}#faq" style="color:#1761c6;">FAQ</a>
         </p>
-
-
-
     </section>
 </main>
 {% endblock %}

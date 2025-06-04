@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+{% block content %}
+<div class="dashboard-bg">
+    <div class="dashboard-main-box">
+        <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
+        <h1>👤 Profile</h1>
+        <p><strong>Name:</strong> {{ name }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        <!-- Add more profile fields as needed -->
+        
+    </div>
+</div>
+{% endblock %}

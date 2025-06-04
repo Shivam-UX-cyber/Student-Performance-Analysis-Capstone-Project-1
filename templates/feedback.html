@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+{% block content %}
+<div class="dashboard-bg">
+    <div class="dashboard-main-box">
+        <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
+        <h1>💬 Feedback</h1>
+        <form method="POST">
+            <label for="feedback">Your Feedback:</label>
+            <textarea name="feedback" id="feedback" rows="5" required></textarea>
+            <button type="submit">Submit Feedback</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

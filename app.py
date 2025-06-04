@@ -263,6 +263,39 @@ def dashboard():
         return render_template('dashboard.html', name=name, email=email,hide_signin_btn=True)
     else:
         return redirect(url_for('signin'))
+    
+@app.route('/profile')
+def profile():
+    # Fetch and display user profile info
+    return render_template('profile.html')
+
+@app.route('/student_input', methods=['GET', 'POST'])
+def student_input():
+    if request.method == 'POST':
+        # Process and save the form data here
+        # flash("Data submitted successfully!", "success")
+        return redirect(url_for('dashboard'))
+    return render_template('student_input.html')
+
+@app.route('/performance_analysis')
+def performance_analysis():
+    # Show analytics, graphs, trends
+    return render_template('performance_analysis.html')
+
+@app.route('/update_info', methods=['GET', 'POST'])
+def update_info():
+    # Form to update student info
+    return render_template('update_info.html')
+
+@app.route('/ai_prediction')
+def ai_prediction():
+    # Show ML prediction results
+    return render_template('ai_prediction.html')
+
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+    # Feedback form and display
+    return render_template('feedback.html')
 
 @app.route('/admin')
 def admin_panel():

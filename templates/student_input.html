@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard_styles.css') }}">
+{% endblock %}
+{% block content %}
+<div class="dashboard-bg">
+    <div class="dashboard-main-box">
+        <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
+        <h1>📝 Student Input Form</h1>
+
+        <form method="POST" action="{{ url_for('student_input') }}">
+            <!-- Student Demographics -->
+            <h2>👤 Student Demographics</h2>
+            <label>Student ID (optional):</label>
+            <input type="text" name="student_id" placeholder="Auto-generated or leave blank">
+
+            <label>Name:</label>
+            <input type="text" name="name" placeholder="Your Name">
+
+            <label>Age:</label>
+            <input type="number" name="age" min="10" max="100" required>
+
+            <label>Gender:</label>
+            <select name="gender" required>
+                <option value="">Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+
+            <label>Location:</label>
+            <div style="margin-bottom:10px;">
+                <label>
+                    <input type="radio" name="location" value="City" required>
+                    City
+                </label>
+                <label style="margin-left:20px;">
+                    <input type="radio" name="location" value="Village" required>
+                    Village
+                </label>
+            </div>
+
+            <label>Parental Education Level:</label>
+            <select name="parent_edu" required>
+                <option value="">Select</option>
+                <option>No Formal Education</option>
+                <option>School</option>
+                <option>UG</option>
+                <option>PG</option>
+                <option>PhD</option>
+            </select>
+
+            <!-- Education Level -->
+            <label>Education Level:</label>
+            <select name="education_level" id="education_level" required>
+                <option value="">Select</option>
+                <option value="school">School (Class 1–12)</option>
+                <option value="bsc">College - B.Sc. (Science)</option>
+                <option value="engineering">College - Engineering</option>
+                <option value="commerce">College - Commerce</option>
+            </select>
+
+            <!-- Dynamic Subjects Section -->
+            <div id="dynamic-subjects-section" style="margin-bottom:18px; display:none;">
+                <h3 id="subject-section-title" style="margin-bottom:6px;"></h3>
+                <div id="subjects-list"></div>
+                <button type="button" id="add-subject-btn" style="margin-top:10px;">➕ Add Subject</button>
+                <label style="margin-top:10px;">Average Marks (auto-calculated):</label>
+                <input type="number" name="dynamic_avg" readonly id="dynamic-avg-marks">
+            </div>
+
+            <!-- CPI/CGPA for college streams only -->
+            <div id="cpi-cgpa-block" style="display:none;">
+                <label>CPI/CGPA:</label>
+                <input type="number" name="cpi_cgpa" min="0" max="10" step="0.01">
+            </div>
+
+            <!-- Common Academic Fields -->
+            <label>Class Rank:</label>
+            <input type="number" name="class_rank" min="1" required>
+
+            <label>Number of Backlogs:</label>
+            <input type="number" name="backlogs" min="0" required>
+
+            <!-- Attendance & Participation -->
+            <h2>🏫 Attendance & Participation</h2>
+            <label>Attendance Percentage:</label>
+            <input type="number" name="attendance" min="0" max="100" required>
+
+            <label>Number of Leaves Taken:</label>
+            <input type="number" name="leaves" min="0" required>
+
+            <label>Participation in Class Activities:</label>
+            <select name="participation" required>
+                <option value="">Select</option>
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+                <option>None</option>
+            </select>
+
+            <label for="project-submission">How often did you submit projects on time?</label>
+            <select name="project_submission" id="project-submission">
+                <option value="">-- Select --</option>
+                <option value="always">Always</option>
+                <option value="mostly">Mostly</option>
+                <option value="sometimes">Sometimes</option>
+                <option value="rarely">Rarely</option>
+                <option value="never">Never</option>
+            </select>
+            <!-- Study Habits & Learning Behavior -->
+            <h2>📖 Study Habits & Learning Behavior</h2>
+            <label>Study Hours per Day:</label>
+            <input type="number" name="study_hours" min="0" max="24" required>
+
+            <label>Use of Online Learning Platforms:</label>
+            <label><input type="checkbox" name="platforms[]" value="Khan Academy"> Offline</label>
+            <label><input type="checkbox" name="platforms[]" value="YouTube"> YouTube</label>
+            <label><input type="checkbox" name="platforms[]" value="Coursera"> Coursera</label>
+            <label><input type="checkbox" name="platforms[]" value="Udemy"> Physics Wallah</label>
+            <label><input type="checkbox" name="platforms[]" value="Others"> Others</label>
+
+            <label>Study Style:</label>
+            <label> <input type="radio" name="study_style" value="Group Study" required> Group Study</label>
+            <label><input type="radio" name="study_style" value="Self Study" required> Self Study</label>
+
+            <!-- Extracurricular Activities -->
+            <h2>⚽ Extracurricular Activities</h2>
+            <label>Sports Participation:</label>
+            <label><input type="checkbox" name="sports" value="Yes"> Yes</label>
+            <label><input type="checkbox" name="sports" value="Yes"> No</label>
+
+            <label>Club Memberships:</label>
+            <select name="club_membership" id="club">
+                <option value="">-- Select --</option>
+                <option value="none">None</option>
+                <option value="cultural">Cultural Club</option>
+                <option value="sports">Sports Club</option>
+                <option value="tech">Technical/Robotics Club</option>
+                <option value="literary">Literary Club</option>
+                <option value="music_dance">Music/Dance Club</option>
+                <option value="drama">Drama/Theater Club</option>
+                <option value="volunteer">Social Service/Volunteer Club</option>
+                <option value="student_union">Student Union/Leadership Role</option>
+                <option value="other">Others</option>
+            </select>
+
+            <label>Volunteer Work:</label>
+            <select id="volunteer" name="volunteer_work">
+                <option value="">-- Select --</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+
+            <!-- Psychological & Lifestyle Factors -->
+            <h2>🧠 Psychological & Lifestyle Factors</h2>
+            <label>Sleep Hours per Day:</label>
+            <input type="number" name="sleep_hours" min="0" max="24" required>
+
+            <label>Screen Time per Day (in hours):</label>
+            <input type="number" name="screen_time" min="0" max="24" required>
+
+            <label>Stress Level:</label>
+            <select name="stress" required>
+                <option value="">Select</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+            </select>
+
+            <!-- Future Aspirations -->
+            <h2>🚀 Future Aspirations</h2>
+            <label>Career Interest:</label>
+            <select id="career-interest" name="career_interest">
+                <option value="">-- Select --</option>
+                <option value="software_engineer">Software Engineer</option>
+                <option value="data_scientist">Data Scientist / Analyst</option>
+                <option value="civil_services">Civil Services (UPSC, BPSC, etc.)</option>
+                <option value="govt_exam">Government Exams (SSC, Railway, Banking)</option>
+                <option value="teacher">Teacher / Professor</option>
+                <option value="doctor">Doctor / Medical</option>
+                <option value="entrepreneur">Entrepreneur / Business</option>
+                <option value="lawyer">Law / Judiciary</option>
+                <option value="arts_media">Arts / Media / Literature</option>
+                <option value="not_sure">Not sure yet</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label>Higher Studies Plan:</label>
+            <label><input type="radio" name="higher_studies" value="Yes" required> Yes</label>
+            <label><input type="radio" name="higher_studies" value="No" required> No</label>
+            <label><input type="radio" name="higher_studies" value="Not Sure" required> Not Sure</label>
+
+            <label>Internship Experience:</label>
+            <label><input type="checkbox" name="internship" value="Yes"> Yes</label>
+            <label><input type="checkbox" name="internship" value="No"> No</label>
+
+            <br><br>
+            <button type="submit">🎯 Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const streamTitles = {
+        school: "🎓 School Subjects (Class 1–12)",
+        bsc: "🎓 College Subjects (B.Sc. Science)",
+        engineering: "🎓 College Subjects (Engineering)",
+        commerce: "🎓 College Subjects (Commerce)"
+    };
+
+    document.getElementById('education_level').addEventListener('change', function () {
+        let val = this.value;
+        let section = document.getElementById('dynamic-subjects-section');
+        let title = document.getElementById('subject-section-title');
+        let subjectsList = document.getElementById('subjects-list');
+        let cpiBlock = document.getElementById('cpi-cgpa-block');
+        if (val) {
+            section.style.display = 'block';
+            title.textContent = streamTitles[val] || "Subjects";
+            subjectsList.innerHTML = '';
+            addSubjectField();
+            calcDynamicAvg();
+            // Show CPI/CGPA for college streams
+            if (val === 'school') {
+                cpiBlock.style.display = 'none';
+            } else {
+                cpiBlock.style.display = 'block';
+            }
+        } else {
+            section.style.display = 'none';
+            subjectsList.innerHTML = '';
+            title.textContent = '';
+            document.getElementById('dynamic-avg-marks').value = '';
+            cpiBlock.style.display = 'none';
+        }
+    });
+
+    // Add subject field dynamically
+    function addSubjectField() {
+        const subjectsList = document.getElementById('subjects-list');
+        const div = document.createElement('div');
+        div.className = 'subject-row';
+        div.style.marginBottom = '8px';
+        div.innerHTML = `
+        <input type="text" name="subject_names[]" placeholder="Subject Name" required style="width:180px; margin-right:8px;">
+        <input type="number" name="subject_marks[]" min="0" max="100" placeholder="Marks" required style="width:100px;" class="dynamic-marks">
+        <button type="button" class="remove-subject-btn" style="margin-left:8px;">❌</button>
+    `;
+        subjectsList.appendChild(div);
+
+        // Remove subject row
+        div.querySelector('.remove-subject-btn').onclick = function () {
+            div.remove();
+            calcDynamicAvg();
+        };
+
+        // Recalculate average on input
+        div.querySelector('input[type="number"]').addEventListener('input', calcDynamicAvg);
+    }
+
+    // Add subject on button click
+    document.getElementById('add-subject-btn').onclick = addSubjectField;
+
+    // Calculate average marks dynamically
+    function calcDynamicAvg() {
+        let marksInputs = document.querySelectorAll('.dynamic-marks');
+        let values = Array.from(marksInputs)
+            .map(input => input.value)
+            .filter(val => val !== "")
+            .map(Number);
+        let avg = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : '';
+        document.getElementById('dynamic-avg-marks').value = avg;
+    }
+
+    // Initial hide on page load
+    window.onload = function () {
+        document.getElementById('dynamic-subjects-section').style.display = 'none';
+    };
+</script>
+{% endblock %}
