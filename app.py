@@ -267,7 +267,7 @@ def dashboard():
 @app.route('/profile')
 def profile():
     # Fetch and display user profile info
-    return render_template('profile.html')
+    return render_template('profile.html',hide_signin_btn=True)
 
 @app.route('/student_input', methods=['GET', 'POST'])
 def student_input():
@@ -275,27 +275,27 @@ def student_input():
         # Process and save the form data here
         # flash("Data submitted successfully!", "success")
         return redirect(url_for('dashboard'))
-    return render_template('student_input.html')
+    return render_template('student_input.html', hide_signin_btn=True)
 
 @app.route('/performance_analysis')
 def performance_analysis():
     # Show analytics, graphs, trends
-    return render_template('performance_analysis.html')
+    return render_template('performance_analysis.html', hide_signin_btn=True)
 
 @app.route('/update_info', methods=['GET', 'POST'])
 def update_info():
     # Form to update student info
-    return render_template('update_info.html')
+    return render_template('update_info.html', hide_signin_btn=True)
 
 @app.route('/ai_prediction')
 def ai_prediction():
     # Show ML prediction results
-    return render_template('ai_prediction.html')
+    return render_template('ai_prediction.html', hide_signin_btn=True)
 
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
     # Feedback form and display
-    return render_template('feedback.html')
+    return render_template('feedback.html', hide_signin_btn=True)
 
 @app.route('/admin')
 def admin_panel():
