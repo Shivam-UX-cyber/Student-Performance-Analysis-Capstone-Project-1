@@ -9,10 +9,8 @@
         <h1>📝 Student Input Form</h1>
 
         <form method="POST" action="{{ url_for('update_info') }}">
-
             <!-- Student Demographics -->
             <h2>👤 Student Demographics</h2>
-
 
             <label>Name:</label>
             <input type="text" name="name" placeholder="Your Name" value="{{ student.name if student else '' }}">
@@ -22,7 +20,7 @@
 
             <label>Gender:</label>
             <select name="gender" required>
-                <option value="">Select</option>
+                <option value="">--Select--</option>
                 <option {% if student and student.gender=='Male' %}selected{% endif %}>Male</option>
                 <option {% if student and student.gender=='Female' %}selected{% endif %}>Female</option>
                 <option {% if student and student.gender=='Other' %}selected{% endif %}>Other</option>
@@ -44,7 +42,7 @@
 
             <label>Parental Education Level:</label>
             <select name="parent_edu" required>
-                <option value="">Select</option>
+                <option value="">--Select--</option>
                 <option {% if student and student.parent_edu=='No Formal Education' %}selected{% endif %}>No Formal
                     Education</option>
                 <option {% if student and student.parent_edu=='School' %}selected{% endif %}>School</option>
@@ -55,16 +53,22 @@
 
             <!-- Education Level -->
             <label>Education Level:</label>
-<select name="education_level" id="education_level" required>
-    <option value="">Select</option>
-    <option value="school" {% if student and student.education_level=='school' %}selected{% endif %}>(1-12)School</option>
-    <option value="bsc" {% if student and student.education_level=='bsc' %}selected{% endif %}>B.Sc. college</option>
-    <option value="engineering" {% if student and student.education_level=='engineering' %}selected{% endif %}>Engineering college</option>
-    <option value="commerce" {% if student and student.education_level=='commerce' %}selected{% endif %}>Commerce college</option>
-    <option value="Arts" {% if student and student.education_level=='Arts' %}selected{% endif %}>Arts college</option>
-    <option value="Doctor" {% if student and student.education_level=='Doctor' %}selected{% endif %}>Doctor college</option>
-</select>
-            
+            <select name="education_level" id="education_level" required>
+                <option value="">--Select--</option>
+                <option value="school" {% if student and student.education_level=='school' %}selected{% endif %}>
+                    (1-12)School</option>
+                <option value="bsc" {% if student and student.education_level=='bsc' %}selected{% endif %}>B.Sc. college
+                </option>
+                <option value="engineering" {% if student and student.education_level=='engineering' %}selected{% endif
+                    %}>Engineering college</option>
+                <option value="commerce" {% if student and student.education_level=='commerce' %}selected{% endif %}>
+                    Commerce college</option>
+                <option value="Arts" {% if student and student.education_level=='Arts' %}selected{% endif %}>Arts
+                    college</option>
+                <option value="Doctor" {% if student and student.education_level=='Doctor' %}selected{% endif %}>Doctor
+                    college</option>
+            </select>
+
 
             <!-- Academic Details -->
             <h2>📚 Academic Details</h2>
@@ -97,7 +101,6 @@
                     value="{{ student.cpi_cgpa if student and student.cpi_cgpa else '' }}">
             </div>
 
-
             <!-- Common Academic Fields -->
             <label>Class Rank:</label>
             <input type="number" name="class_rank" min="1" required value="{{ student.class_rank if student else '' }}">
@@ -116,7 +119,7 @@
 
             <label>Participation in Class Activities:</label>
             <select name="participation" required>
-                <option value="">Select</option>
+                <option value="">--Select--</option>
                 <option {% if student and student.participation=='High' %}selected{% endif %}>High</option>
                 <option {% if student and student.participation=='Medium' %}selected{% endif %}>Medium</option>
                 <option {% if student and student.participation=='Low' %}selected{% endif %}>Low</option>
@@ -155,6 +158,8 @@
                     student.platforms %}checked{% endif %}> Udemy</label>
             <label><input type="checkbox" name="platforms[]" value="Others" {% if student and 'Others' in
                     student.platforms %}checked{% endif %}> Others</label>
+            <label><input type="checkbox" name="platforms[]" value="Studying offline" {% if student and 'Studying offline' in
+                    student.platforms %}checked{% endif %}> Studying offline</label>
 
             <label>Study Style:</label>
             <label> <input type="radio" name="study_style" value="Group Study" required {% if student and
@@ -167,7 +172,6 @@
             <label>Sports Participation:</label>
             <label><input type="checkbox" name="sports" value="Yes" {% if student and student.sports=='Yes' %}checked{%
                     endif %}> Yes</label>
-            
 
             <label>Club Memberships:</label>
             <select name="clubs" id="club">
@@ -211,7 +215,7 @@
 
             <label>Stress Level:</label>
             <select name="stress" required>
-                <option value="">Select</option>
+                <option value="">--Select--</option>
                 <option {% if student and student.stress=='Low' %}selected{% endif %}>Low</option>
                 <option {% if student and student.stress=='Medium' %}selected{% endif %}>Medium</option>
                 <option {% if student and student.stress=='High' %}selected{% endif %}>High</option>

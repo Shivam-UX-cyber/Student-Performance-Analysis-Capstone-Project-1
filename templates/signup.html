@@ -20,10 +20,8 @@
         <input type="email" id="email" name="email" required>
 
         <label for="password">Create Password:</label>
-        <input type="password" id="password" name="password"
-            pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$"
-            title="Minimum 6 characters, at least one letter, one number, and one special character"
-            required>
+        <input type="password" id="password" name="password" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$"
+            title="Minimum 6 characters, at least one letter, one number, and one special character" required>
 
         <label for="confirm_password">Confirm Password:</label>
         <input type="password" id="confirm_password" name="confirm_password" required>
@@ -36,14 +34,14 @@
 </div>
 
 <script>
-document.querySelector('.signup-form').onsubmit = function(e) {
-    const pwd = document.querySelector('input[name="password"]').value;
-    const cpwd = document.querySelector('input[name="confirm_password"]').value;
-    if (pwd !== cpwd) {
-        alert("Passwords do not match!");
-        e.preventDefault();
-    }
-};
+    document.querySelector('.signup-form').onsubmit = function (e) {
+        const pwd = document.querySelector('input[name="password"]').value;
+        const cpwd = document.querySelector('input[name="confirm_password"]').value;
+        if (pwd !== cpwd) {
+            alert("Passwords do not match!");
+            e.preventDefault();
+        }
+    };
 </script>
 
 {% endblock %}

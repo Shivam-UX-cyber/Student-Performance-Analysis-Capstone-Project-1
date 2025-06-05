@@ -1,3 +1,5 @@
+// This script handles dynamic subject fields and average marks calculation for updating the form based on the selected education level.
+// It also manages the visibility of the CPI/CGPA block based on the education level.
 const streamTitles = {
     school: "🎓 School Subjects (Class 1–12)",
     bsc: "🎓 College Subjects (B.Sc. Science)",

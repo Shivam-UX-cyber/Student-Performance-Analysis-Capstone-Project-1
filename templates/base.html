@@ -1,81 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Students Performance Analysis</title>
-    <meta name="description" content="Analyze and improve student performance with data-driven strategies.">
-    <meta name="keywords" content="student analysis, education, academic performance, ML, prediction">
-    <meta name="author" content="Your Name or Team">
-    <!-- Favicon -->
-    <link rel="icon" href="{{ url_for('static', filename='logo_capstone 1.png') }}" type="image/png">
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    {% block head %}{% endblock %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students Performance Analysis</title>
+  <meta name="description" content="Analyze and improve student performance with data-driven strategies.">
+  <meta name="keywords" content="student analysis, education, academic performance, ML, prediction">
+  <meta name="author" content="Your Name or Team">
+  <!-- Favicon -->
+  <link rel="icon" href="{{ url_for('static', filename='logo_capstone 1.png') }}" type="image/png">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  {% block head %}{% endblock %}
 </head>
 
-<body{% if gray_bg %} class="gray-bg"{% endif %}>
-    <!-- Header/Navbar -->
-    <header class="navbar">
-        <div class="logo">
-            Students <span>Performance</span> Analysis
-            <span class="logo-img-wrapper">
-                <img src="{{ url_for('static', filename='logo_capstone 1.png') }}" alt="Logo" class="logo-img">
-            </span>
-        </div>
-        <nav class="nav-links" id="navLinks">
-            <a href="{{ url_for('about') }}">About</a>
-            <a href="{{ url_for('docs') }}">Docs</a>
-            <a href="{{ url_for('support') }}">Support</a>
-            {% if not hide_signin_btn %}
-            <a href="{{ url_for('signin') }}">
-                <button class="sign-in">Sign In</button>
-            </a>
-            {% endif %}
-        </nav>
-
-        <!-- Responsive Menu Icon -->
-        <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
-    </header>
-
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flashed-messages">
-          {% for category, message in messages %}
-            <div class="{{ category }}-message">{{ message }}</div>
-          {% endfor %}
-        </div>
+<body{% if gray_bg %} class="gray-bg" {% endif %}>
+  <!-- Header/Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      Students <span>Performance</span> Analysis
+      <span class="logo-img-wrapper">
+        <img src="{{ url_for('static', filename='logo_capstone 1.png') }}" alt="Logo" class="logo-img">
+      </span>
+    </div>
+    <nav class="nav-links" id="navLinks">
+      {% if not session.get('email') %}
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('docs') }}">Docs</a>
+      <a href="{{ url_for('support') }}">Support</a>
       {% endif %}
-    {% endwith %}
+      {% if not hide_signin_btn %}
+      <a href="{{ url_for('signin') }}">
+        <button class="sign-in">Sign In</button>
+      </a>
+      {% endif %}
+    </nav>
 
-    <!-- Page Specific Content -->
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    <!-- Responsive Menu Icon -->
+    {% if not session.get('email') %}
+    <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+    {% endif %}
+  </header>
 
-    <!-- Scripts -->
-    <script>
-        function toggleMenu() {
-            const nav = document.getElementById('navLinks');
-            nav.classList.toggle('active');
-        }
-    </script>
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flashed-messages">
+    {% for category, message in messages %}
+    <div class="{{ category }}-message">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
 
-    {% block scripts %}{% endblock %}
-    <script>
-  // Hide flashed messages after 3 seconds
-  setTimeout(function() {
-    var flashes = document.querySelectorAll('.flashed-messages > div');
-    flashes.forEach(function(flash) {
-      flash.style.transition = "opacity 0.5s";
-      flash.style.opacity = 0;
-      setTimeout(function() {
-        flash.style.display = "none";
-      }, 500);
-    });
-  }, 3000); // 3000ms = 3 seconds
-</script>
-</body>
+  <!-- Page Specific Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Scripts -->
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('active');
+    }
+  </script>
+
+  {% block scripts %}{% endblock %}
+  <script>
+    // Hide flashed messages after 3 seconds
+    setTimeout(function () {
+      var flashes = document.querySelectorAll('.flashed-messages > div');
+      flashes.forEach(function (flash) {
+        flash.style.transition = "opacity 0.5s";
+        flash.style.opacity = 0;
+        setTimeout(function () {
+          flash.style.display = "none";
+        }, 500);
+      });
+    }, 3000); // 3000ms = 3 seconds
+  </script>
+  </body>
+
 </html>

@@ -1,17 +1,80 @@
 {% extends "base.html" %}
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard_styles.css') }}">
 {% endblock %}
 {% block content %}
+
 <div class="dashboard-bg">
     <div class="dashboard-main-box">
         <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
         <h1>💬 Feedback</h1>
-        <form method="POST">
-            <label for="feedback">Your Feedback:</label>
-            <textarea name="feedback" id="feedback" rows="5" required></textarea>
-            <button type="submit">Submit Feedback</button>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('feedback') }}">
+            <label>Your Name (optional):</label>
+            <input type="text" name="name" value="{{ name if name else '' }}" placeholder="Enter your name"
+                class="form-input">
+
+            <label>Your Email (optional):</label>
+            <input type="email" name="email" value="{{ email if email else '' }}" placeholder="Enter your email"
+                class="form-input">
+
+            <label>Which feature did you like the most?</label>
+            <select name="favorite_feature" class="form-select">
+                <option value="">--Select--</option>
+                <option value="dashboard" {% if favorite_feature=='dashboard' %}selected{% endif %}>Dashboard</option>
+                <option value="performance_analysis" {% if favorite_feature=='performance_analysis' %}selected{% endif
+                    %}>Performance Analysis</option>
+                <option value="ai_prediction" {% if favorite_feature=='ai_prediction' %}selected{% endif %}>AI
+                    Prediction</option>
+                <option value="update_info" {% if favorite_feature=='update_info' %}selected{% endif %}>Update Info
+                </option>
+                <option value="other" {% if favorite_feature=='other' %}selected{% endif %}>Other</option>
+            </select>
+
+            <label>How easy was it to use the website?</label>
+            <select name="ease_of_use" required class="form-select">
+                <option value="">--Select--</option>
+                <option value="very_easy" {% if ease_of_use=='very_easy' %}selected{% endif %}>Very Easy</option>
+                <option value="easy" {% if ease_of_use=='easy' %}selected{% endif %}>Easy</option>
+                <option value="average" {% if ease_of_use=='average' %}selected{% endif %}>Average</option>
+                <option value="difficult" {% if ease_of_use=='difficult' %}selected{% endif %}>Difficult</option>
+                <option value="very_difficult" {% if ease_of_use=='very_difficult' %}selected{% endif %}>Very Difficult
+                </option>
+            </select>
+
+            <label>Your Feedback:</label>
+            <textarea name="feedback" rows="5" cols="50" placeholder="Enter your feedback here..." required
+                class="form-input">{{ feedback if feedback else '' }}</textarea>
+
+            <label>Rating:</label>
+            <select name="rating" required class="form-select">
+                <option value="">--Select--</option>
+                <option value="5" {% if rating=='5' %}selected{% endif %}>⭐⭐⭐⭐⭐ Excellent</option>
+                <option value="4" {% if rating=='4' %}selected{% endif %}>⭐⭐⭐⭐ Good</option>
+                <option value="3" {% if rating=='3' %}selected{% endif %}>⭐⭐⭐ Average</option>
+                <option value="2" {% if rating=='2' %}selected{% endif %}>⭐⭐ Poor</option>
+                <option value="1" {% if rating=='1' %}selected{% endif %}>⭐ Very Poor</option>
+            </select>
+
+            <label>Would you recommend this site to others?</label>
+            <select name="recommend" required class="form-select">
+                <option value="">--Select--</option>
+                <option value="yes" {% if recommend=='yes' %}selected{% endif %}>Yes</option>
+                <option value="maybe" {% if recommend=='maybe' %}selected{% endif %}>Maybe</option>
+                <option value="no" {% if recommend=='no' %}selected{% endif %}>No</option>
+            </select>
+
+            <br><br>
+            <button type="submit" class="submit-btn">Submit Feedback</button>
         </form>
     </div>
 </div>
+
 {% endblock %}

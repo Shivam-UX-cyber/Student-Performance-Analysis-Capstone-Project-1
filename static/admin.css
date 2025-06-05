@@ -59,8 +59,45 @@ tr:hover {
 @media (max-width: 700px) {
     .auth-container {
         padding: 10px 2px;
+        max-width: 100%;
+        margin: 10px 0;
     }
     table, th, td {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
+    }
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    thead {
+        display: none;
+    }
+    tr, td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    tr {
+        margin-bottom: 18px;
+        border-bottom: 2px solid #e3eafc;
+        background: #fff !important;
+    }
+    td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        min-height: 36px;
+    }
+    td:before {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #1a73e8;
+        content: attr(data-label);
     }
 }

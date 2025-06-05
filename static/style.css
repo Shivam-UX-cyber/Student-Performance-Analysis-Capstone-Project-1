@@ -195,53 +195,6 @@ body {
     }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .main-content {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .text-section h1 {
-        font-size: 36px;
-    }
-
-    .text-section p {
-        font-size: 16px;
-    }
-
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        background-color: #333;
-        position: absolute;
-        top: 80px;
-        right: 5%;
-        width: 150px;
-        border-radius: 8px;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .menu-icon {
-        display: block;
-    }
-
-    .logo {
-        font-size: 28px;
-        flex-direction: column;
-        align-items: flex-start;
-        text-align: left;
-    }
-
-    .logo-img {
-        height: 50px;
-    }
-
-}
-
 .divider {
     width: 150px;
     height: 3px;
@@ -345,11 +298,13 @@ body {
     flex-direction: column;
     align-items: flex-start;
 }
+
 .profile-box h2 {
     margin-bottom: 8px;
     font-size: 1.3rem;
     color: #ffe066;
 }
+
 .profile-box p {
     margin: 0;
     color: #ffe066;
@@ -364,6 +319,7 @@ body {
     align-items: flex-end;
     min-width: 180px;
 }
+
 .dropbtn {
     background: #ffe066;
     color: #222;
@@ -377,9 +333,11 @@ body {
     margin-bottom: 8px;
     transition: background 0.2s;
 }
+
 .dropbtn:hover {
     background: #ffd60a;
 }
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -392,6 +350,7 @@ body {
     margin-top: 8px;
     overflow: hidden;
 }
+
 .dropdown-content a {
     color: #ffe066;
     padding: 16px 24px;
@@ -400,12 +359,61 @@ body {
     font-size: 1.08rem;
     transition: background 0.2s, color 0.2s;
 }
+
 .dropdown-content a:hover {
     background: #ffe066;
     color: #232323;
 }
+
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .text-section h1 {
+        font-size: 36px;
+    }
+
+    .text-section p {
+        font-size: 16px;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background-color: #333;
+        position: absolute;
+        top: 80px;
+        right: 5%;
+        width: 150px;
+        border-radius: 8px;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .menu-icon {
+        display: block;
+    }
+
+    .logo {
+        font-size: 28px;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .logo-img {
+        height: 50px;
+    }
+
 }
 
 /* Responsive Design */
@@ -422,6 +430,7 @@ body {
         max-width: 100%;
     }
 }
+
 @media (max-width: 700px) {
     .dashboard-main-box {
         padding: 10px 2vw;

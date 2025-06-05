@@ -87,8 +87,43 @@
 }
 
 @media (max-width: 700px) {
+  .dashboard-main-box {
+    padding: 0 2vw;
+  }
   .dashboard-main-box form {
-    padding: 18px 6px 12px 6px;
+    padding: 14px 2vw 10px 2vw;
+    max-width: 100vw;
+    border-radius: 8px;
+    box-shadow: none;
+    gap: 12px;
+  }
+  .dashboard-main-box h1,
+  .dashboard-main-box h2 {
+    font-size: 1.05rem;
+    margin-top: 12px;
+    padding-bottom: 2px;
+  }
+  .dashboard-main-box label {
+    font-size: 0.97rem;
+    margin-bottom: 2px;
+  }
+  .dashboard-main-box input[type="text"],
+  .dashboard-main-box input[type="number"],
+  .dashboard-main-box input[type="email"],
+  .dashboard-main-box select,
+  .dashboard-main-box textarea {
+    font-size: 0.97rem;
+    padding: 8px 8px;
+    margin-bottom: 8px;
+  }
+  .dashboard-main-box button[type="submit"] {
+    font-size: 1rem;
+    padding: 10px 0;
+    margin-top: 8px;
+    border-radius: 6px;
+  }
+  .dashboard-main-box .go-back-btn {
+    font-size: 0.97rem;
+    margin-bottom: 10px;
   }
 }
-

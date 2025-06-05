@@ -7,13 +7,20 @@ A flask based web application for students and educators to analyze academic per
 ## 🚀 Features
 
 - **User Authentication:** Sign up, sign in (with OTP), password reset, and secure session management.
+- **Student Info Form:** Collects demographics, academics, attendance, study habits, extracurriculars, psychological factors, and future aspirations.
 - **Personal Dashboard:** View your academic profile and access analysis tools.
 - **Performance Analytics:** Visualize grades and trends.
 - **AI Prediction:** Get smart predictions for future performance.
 - **Support System:** Contact support via a built-in form (sends email to admin).
 - **Admin Panel:** Manage users and view login logs (admin only).
-- **Responsive Design:** Works on desktop and mobile.
-- **Security:** Passwords are hashed, sessions are protected, and sensitive info is never exposed.
+- **Dynamic Subjects & Marks:** Add/remove subjects and auto-calculate average marks.
+- **CPI/CGPA Field:** Shown only for college-level students.
+- **Admin Panel:** View all students and submitted feedback.
+- **Feedback System:** Users can submit feedback; admin can view all feedback.
+- **Mobile Responsive:** Clean UI for desktop and mobile.
+- **Data Visualization:** (If implemented) Performance analysis and AI prediction modules.
+- **Security:** Passwords are hashed; session-based access control.
+
 
 ---
 
@@ -90,14 +97,45 @@ Visit [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
 For help, use the [Support page](http://127.0.0.1:5000/support) or email: `support@example.com`
 
 ---
+## 📝 Usage
+
+- **Sign Up / Sign In:** Create an account or log in.
+- **Update Info:** Fill out the student input form with all required details.
+- **Dashboard:** Access your profile, performance analysis, update info, AI prediction, and feedback.
+- **Admin Panel:** (If admin) View all students and feedback.
+- **Feedback:** Submit feedback via the feedback form; admins can view all feedback.
+
+---
+
+## 📱 Mobile Responsiveness
+
+- The UI is optimized for both desktop and mobile devices.
+- Tables and forms are readable and usable on small screens.
+
+---
 
 ## ⚠️ Security Notes
 
 - Never commit your real email password or secret key to public repositories.
 - Use environment variables or a `.env` file for sensitive info.
 - For Gmail, use an [App Password](https://support.google.com/accounts/answer/185833) if 2FA is enabled.
+- Passwords are securely hashed.
+- Session management is used for authentication.
+- Admin routes are protected.
 
 ---
+
+## 🙏 Acknowledgements
+
+- [Flask](https://flask.palletsprojects.com/)
+- [Jinja2](https://jinja.palletsprojects.com/)
+- [SQLAlchemy](https://www.sqlalchemy.org/)
+- [Bootstrap](https://getbootstrap.com/) (if used)
+- All open-source contributors and resources used.
+
+---
+
+
 
 ## 📚 License
 

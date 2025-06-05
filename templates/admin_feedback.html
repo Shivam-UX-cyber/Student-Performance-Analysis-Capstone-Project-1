@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+{% endblock %}
+{% block content %}
+<div class="dashboard-bg">
+    <div class="dashboard-main-box">
+        <a href="{{ url_for('admin_panel') }}" class="go-back-btn">⬅ Back to Admin Panel</a>
+        <h1>📋 All Feedback</h1>
+        {% if feedbacks %}
+        <div class="table-responsive">
+            <table class="styled-table" style="width:100%;margin-top:20px;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Feature</th>
+                        <th>Ease of Use</th>
+                        <th>Feedback</th>
+                        <th>Rating</th>
+                        <th>Recommend</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fb in feedbacks %}
+                    <tr>
+                        <td data-label="ID">{{ fb.id }}</td>
+                        <td data-label="Name">{{ fb.name or '-' }}</td>
+                        <td data-label="Email">{{ fb.email or '-' }}</td>
+                        <td data-label="Feature">{{ fb.favorite_feature or '-' }}</td>
+                        <td data-label="Ease of Use">{{ fb.ease_of_use or '-' }}</td>
+                        <td data-label="Feedback">{{ fb.feedback or '-' }}</td>
+                        <td data-label="Rating">{{ fb.rating or '-' }}</td>
+                        <td data-label="Recommend">{{ fb.recommend or '-' }}</td>
+                        <td data-label="Timestamp">{{ fb.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>No feedback submitted yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

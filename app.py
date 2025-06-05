@@ -9,11 +9,8 @@ from datetime import datetime
 from flask import abort
 from dotenv import load_dotenv
 
-
-
 # Initialize Flask app
 app = Flask(__name__)
-
 app.permanent_session_lifetime = timedelta(minutes=30)
 load_dotenv()  # This loads variables from .env into environment
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -76,6 +73,17 @@ class StudentInput(db.Model):
     career_interest = db.Column(db.String(100))
     higher_studies = db.Column(db.String(20))
     internship = db.Column(db.String(10))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(120))
+    favorite_feature = db.Column(db.String(50))
+    ease_of_use = db.Column(db.String(50))
+    feedback = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.String(10))
+    recommend = db.Column(db.String(10))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Routes
@@ -303,8 +311,6 @@ def dashboard():
     else:
         return redirect(url_for('signin'))
 
-# ...existing code...
-
 @app.route('/profile')
 def profile():
     if 'email' not in session:
@@ -347,7 +353,6 @@ def profile():
     }
     return render_template('profile.html', student=student,hide_signin_btn=True)
 
-
 @app.route('/update_info', methods=['GET', 'POST'])
 def update_info():
     if 'email' not in session:
@@ -385,9 +390,8 @@ def update_info():
         sports = request.form.get('sports', 'No')
         volunteer = request.form.get('volunteer', 'No')
         internship = request.form.get('internship', 'No')
-# --- Checkbox handling END ---
+        # --- Checkbox handling END ---
 
-       
         if student_input:
              # Auto-generate student_id if missing
             if not student_input.student_id or student_input.student_id.strip() == "":
@@ -502,8 +506,30 @@ def ai_prediction():
 
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
-    # Feedback form and display
-    return render_template('feedback.html', hide_signin_btn=True)
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        favorite_feature = request.form.get('favorite_feature')
+        ease_of_use = request.form.get('ease_of_use')
+        feedback_text = request.form.get('feedback')
+        rating = request.form.get('rating')
+        recommend = request.form.get('recommend')
+
+        fb = Feedback(
+            name=name,
+            email=email,
+            favorite_feature=favorite_feature,
+            ease_of_use=ease_of_use,
+            feedback=feedback_text,
+            rating=rating,
+            recommend=recommend
+        )
+        db.session.add(fb)
+        db.session.commit()
+        flash("Thank you for your feedback!", "success")
+        return redirect(url_for('feedback'))
+
+    return render_template('feedback.html',hide_signin_btn=True)
 
 @app.route('/admin')
 def admin_panel():
@@ -516,6 +542,11 @@ def admin_panel():
     users = User.query.all()
     logs = UserLog.query.order_by(UserLog.timestamp.desc()).all()
     return render_template('admin_panel.html', users=users, logs=logs,hide_signin_btn=True)
+
+@app.route('/admin/feedback')
+def admin_feedback():
+    feedbacks = Feedback.query.order_by(Feedback.timestamp.desc()).all()
+    return render_template('admin_feedback.html', feedbacks=feedbacks,hide_signin_btn=True)
 
 if __name__ == '__main__':
     with app.app_context():
