@@ -4,14 +4,16 @@ from datetime import timedelta
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-import random
+import random,os,json, uuid
 from datetime import datetime
 from flask import abort
 from dotenv import load_dotenv
-import os
+
+
 
 # Initialize Flask app
 app = Flask(__name__)
+
 app.permanent_session_lifetime = timedelta(minutes=30)
 load_dotenv()  # This loads variables from .env into environment
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -43,6 +45,38 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)  # Add this line
+
+class StudentInput(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), nullable=False)
+    name = db.Column(db.String(100))
+    student_id = db.Column(db.String(50),unique=True)  # Unique student ID
+    age = db.Column(db.Integer)
+    gender = db.Column(db.String(20))
+    location = db.Column(db.String(20))
+    parent_edu = db.Column(db.String(50))
+    education_level = db.Column(db.String(50))
+    subjects = db.Column(db.Text)  # JSON string: {"Math": 95, ...}
+    cpi_cgpa = db.Column(db.Float)
+    class_rank = db.Column(db.Integer)
+    backlogs = db.Column(db.Integer)
+    attendance = db.Column(db.Float)
+    leaves = db.Column(db.Integer)
+    participation = db.Column(db.String(20))
+    project_ontime = db.Column(db.String(10))
+    study_hours = db.Column(db.Float)
+    platforms = db.Column(db.Text)  # JSON string: ["YouTube", ...]
+    study_style = db.Column(db.String(20))
+    sports = db.Column(db.String(10))
+    clubs = db.Column(db.String(100))
+    volunteer = db.Column(db.String(10))
+    sleep_hours = db.Column(db.Float)
+    screen_time = db.Column(db.Float)
+    stress = db.Column(db.String(20))
+    career_interest = db.Column(db.String(100))
+    higher_studies = db.Column(db.String(20))
+    internship = db.Column(db.String(10))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Routes
 @app.route('/')
@@ -114,18 +148,23 @@ def verify_otp():
     if request.method == 'POST':
         user_otp = request.form.get('otp')
         if user_otp == session.get('otp'):
-            # Log the login event
             user = User.query.filter_by(email=session.get('email')).first()
             if user:
                 log = UserLog(user_id=user.id)
                 db.session.add(log)
                 db.session.commit()
-            flash("Login successful!", "success")
-            return redirect(url_for('dashboard'))
+            # Check if student info exists
+            student_input = StudentInput.query.filter_by(email=session.get('email')).order_by(StudentInput.id.desc()).first()
+            if student_input:
+                flash("Login successful!", "success")
+                return redirect(url_for('dashboard'))
+            else:
+                flash("Please complete your profile information.", "info")
+                return redirect(url_for('update_info'))
         else:
             flash("Invalid OTP. Please try again.", "error")
             return redirect(url_for('verify_otp'))
-    return render_template('verify_otp.html')
+    return render_template('verify_otp.html',hide_signin_btn=True)
 
 @app.route('/verify_signup_otp', methods=['GET', 'POST'])
 def verify_signup_otp():
@@ -145,7 +184,7 @@ def verify_signup_otp():
         else:
             flash("Invalid OTP. Please try again.", "error")
             return redirect(url_for('verify_signup_otp'))
-    return render_template('verify_otp.html')
+    return render_template('verify_otp.html',hide_signin_btn=True)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -221,7 +260,7 @@ def reset_password_otp():
         else:
             flash("Invalid OTP. Please try again.", "error")
             return redirect(url_for('reset_password_otp'))
-    return render_template('reset_password_otp.html')
+    return render_template('reset_password_otp.html',hide_signin_btn=True)
 
 @app.route('/reset_password', methods=['GET', 'POST'])
 def reset_password():
@@ -248,7 +287,7 @@ def reset_password():
         else:
             flash("User not found.", "error")
             return redirect(url_for('reset_password'))
-    return render_template('reset_password.html')
+    return render_template('reset_password.html',hide_signin_btn=True)
 
 @app.route('/logout')
 def logout():
@@ -263,29 +302,198 @@ def dashboard():
         return render_template('dashboard.html', name=name, email=email,hide_signin_btn=True)
     else:
         return redirect(url_for('signin'))
-    
+
+# ...existing code...
+
 @app.route('/profile')
 def profile():
-    # Fetch and display user profile info
-    return render_template('profile.html',hide_signin_btn=True)
+    if 'email' not in session:
+        return redirect(url_for('signin'))
 
-@app.route('/student_input', methods=['GET', 'POST'])
-def student_input():
-    if request.method == 'POST':
-        # Process and save the form data here
-        # flash("Data submitted successfully!", "success")
-        return redirect(url_for('dashboard'))
-    return render_template('student_input.html', hide_signin_btn=True)
+    student_input = StudentInput.query.filter_by(email=session['email']).order_by(StudentInput.id.desc()).first()
+    if not student_input:
+        # If no info, redirect to update_info for first-time entry
+        return redirect(url_for('update_info'))
 
-@app.route('/performance_analysis')
-def performance_analysis():
-    # Show analytics, graphs, trends
-    return render_template('performance_analysis.html', hide_signin_btn=True)
+    student = {
+        "name": student_input.name,
+        "email": student_input.email,
+        "student_id": student_input.student_id,
+        "age": student_input.age,
+        "gender": student_input.gender,
+        "location": student_input.location,
+        "parent_edu": student_input.parent_edu,
+        "education_level": student_input.education_level,
+        "subjects": json.loads(student_input.subjects) if student_input.subjects else {},
+        "cpi_cgpa": student_input.cpi_cgpa,
+        "class_rank": student_input.class_rank,
+        "backlogs": student_input.backlogs,
+        "attendance": student_input.attendance,
+        "leaves": student_input.leaves,
+        "participation": student_input.participation,
+        "project_ontime": student_input.project_ontime,
+        "study_hours": student_input.study_hours,
+        "platforms": json.loads(student_input.platforms) if student_input.platforms else [],
+        "study_style": student_input.study_style,
+        "sports": student_input.sports,
+        "clubs": student_input.clubs,
+        "volunteer": student_input.volunteer,
+        "sleep_hours": student_input.sleep_hours,
+        "screen_time": student_input.screen_time,
+        "stress": student_input.stress,
+        "career_interest": student_input.career_interest,
+        "higher_studies": student_input.higher_studies,
+        "internship": student_input.internship
+    }
+    return render_template('profile.html', student=student,hide_signin_btn=True)
+
 
 @app.route('/update_info', methods=['GET', 'POST'])
 def update_info():
-    # Form to update student info
-    return render_template('update_info.html', hide_signin_btn=True)
+    if 'email' not in session:
+        return redirect(url_for('signin'))
+
+    student_input = StudentInput.query.filter_by(email=session['email']).order_by(StudentInput.id.desc()).first()
+
+    if request.method == 'POST':
+        # --- REQUIRED FIELD VALIDATION START ---
+        required_fields = [
+            'name', 'age', 'gender', 'location', 'parent_edu', 'education_level',
+            'class_rank', 'backlogs', 'attendance', 'leaves', 'participation',
+            'project_ontime', 'study_hours', 'study_style', 'sleep_hours',
+            'screen_time', 'stress', 'career_interest', 'higher_studies'
+        ]
+        for field in required_fields:
+            value = request.form.get(field)
+            if not value or value.strip() == "":
+                flash(f"{field.replace('_', ' ').title()} is required.", "danger")
+                return redirect(url_for('update_info'))
+
+        # Special check for at least one subject
+        subject_names = request.form.getlist('subject_names[]')
+        subject_marks = request.form.getlist('subject_marks[]')
+        if not subject_names or not subject_marks or len(subject_names) == 0:
+            flash("At least one subject and mark is required.", "danger")
+            return redirect(url_for('update_info'))
+        # --- REQUIRED FIELD VALIDATION END ---
+
+        # Now continue with your normal form data gathering and saving...
+        subjects = {name: mark for name, mark in zip(subject_names, subject_marks)}
+        platforms = request.form.getlist('platforms[]')
+
+        # --- Checkbox handling START ---
+        sports = request.form.get('sports', 'No')
+        volunteer = request.form.get('volunteer', 'No')
+        internship = request.form.get('internship', 'No')
+# --- Checkbox handling END ---
+
+       
+        if student_input:
+             # Auto-generate student_id if missing
+            if not student_input.student_id or student_input.student_id.strip() == "":
+                student_input.student_id = str(uuid.uuid4())[:8]
+           
+            # Update existing record (keep the same student_id if already present)
+            student_input.name = request.form.get('name')
+            # student_input.student_id = student_input.student_id  # No change
+            student_input.age = request.form.get('age')
+            student_input.gender = request.form.get('gender')
+            student_input.location = request.form.get('location')
+            student_input.parent_edu = request.form.get('parent_edu')
+            student_input.education_level = request.form.get('education_level')
+            student_input.subjects = json.dumps(subjects)
+            student_input.cpi_cgpa = request.form.get('cpi_cgpa') or None
+            student_input.class_rank = request.form.get('class_rank')
+            student_input.backlogs = request.form.get('backlogs')
+            student_input.attendance = request.form.get('attendance')
+            student_input.leaves = request.form.get('leaves')
+            student_input.participation = request.form.get('participation')
+            student_input.project_ontime = request.form.get('project_ontime')
+            student_input.study_hours = request.form.get('study_hours')
+            student_input.platforms = json.dumps(platforms)
+            student_input.study_style = request.form.get('study_style')
+            student_input.sports = sports
+            student_input.clubs = request.form.get('clubs')
+            student_input.volunteer = volunteer
+            student_input.sleep_hours = request.form.get('sleep_hours')
+            student_input.screen_time = request.form.get('screen_time')
+            student_input.stress = request.form.get('stress')
+            student_input.career_interest = request.form.get('career_interest')
+            student_input.higher_studies = request.form.get('higher_studies')
+            student_input.internship = internship
+        else:
+            # Create new record with auto-generated student_id
+            student_input = StudentInput(
+                email=session['email'],
+                name=request.form.get('name'),
+                student_id=str(uuid.uuid4())[:8],  # Auto-generate unique ID
+                age=request.form.get('age'),
+                gender=request.form.get('gender'),
+                location=request.form.get('location'),
+                parent_edu=request.form.get('parent_edu'),
+                education_level=request.form.get('education_level'),
+                subjects=json.dumps(subjects),
+                cpi_cgpa=request.form.get('cpi_cgpa') or None,
+                class_rank=request.form.get('class_rank'),
+                backlogs=request.form.get('backlogs'),
+                attendance=request.form.get('attendance'),
+                leaves=request.form.get('leaves'),
+                participation=request.form.get('participation'),
+                project_ontime=request.form.get('project_ontime'),
+                study_hours=request.form.get('study_hours'),
+                platforms=json.dumps(platforms),
+                study_style=request.form.get('study_style'),
+                sports=request.form.get('sports'),
+                clubs=request.form.get('clubs'),
+                volunteer=request.form.get('volunteer'),
+                sleep_hours=request.form.get('sleep_hours'),
+                screen_time=request.form.get('screen_time'),
+                stress=request.form.get('stress'),
+                career_interest=request.form.get('career_interest'),
+                higher_studies=request.form.get('higher_studies'),
+                internship=request.form.get('internship')
+            )
+            db.session.add(student_input)
+        db.session.commit()
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for('profile'))
+
+    # On GET, pass existing data (if any) to pre-fill the form
+    student = None
+    if student_input:
+        student = {
+            "name": student_input.name,
+            "student_id": student_input.student_id,
+            "age": student_input.age,
+            "gender": student_input.gender,
+            "location": student_input.location,
+            "parent_edu": student_input.parent_edu,
+            "education_level": student_input.education_level,
+            "subjects": json.loads(student_input.subjects) if student_input.subjects else {},
+            "cpi_cgpa": student_input.cpi_cgpa,
+            "class_rank": student_input.class_rank,
+            "backlogs": student_input.backlogs,
+            "attendance": student_input.attendance,
+            "leaves": student_input.leaves,
+            "participation": student_input.participation,
+            "project_ontime": student_input.project_ontime,
+            "study_hours": student_input.study_hours,
+            "platforms": json.loads(student_input.platforms) if student_input.platforms else [],
+            "study_style": student_input.study_style,
+            "sports": student_input.sports,
+            "clubs": student_input.clubs,
+            "volunteer": student_input.volunteer,
+            "sleep_hours": student_input.sleep_hours,
+            "screen_time": student_input.screen_time,
+            "stress": student_input.stress,
+            "career_interest": student_input.career_interest,
+            "higher_studies": student_input.higher_studies,
+            "internship": student_input.internship
+        }
+    return render_template('update_info.html', student=student, hide_signin_btn=True)
+@app.route('/performance_analysis')
+def performance_analysis():
+    return render_template('performance_analysis.html', hide_signin_btn=True)
 
 @app.route('/ai_prediction')
 def ai_prediction():
@@ -307,7 +515,7 @@ def admin_panel():
         abort(403)  # Forbidden
     users = User.query.all()
     logs = UserLog.query.order_by(UserLog.timestamp.desc()).all()
-    return render_template('admin_panel.html', users=users, logs=logs)
+    return render_template('admin_panel.html', users=users, logs=logs,hide_signin_btn=True)
 
 if __name__ == '__main__':
     with app.app_context():

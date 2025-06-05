@@ -1,16 +1,146 @@
 {% extends "base.html" %}
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 {% endblock %}
 {% block content %}
 <div class="dashboard-bg">
-    <div class="dashboard-main-box">
+    <div class="dashboard-main-box" style="max-width:700px;">
         <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
         <h1>👤 Profile</h1>
-        <p><strong>Name:</strong> {{ name }}</p>
-        <p><strong>Email:</strong> {{ email }}</p>
-        <!-- Add more profile fields as needed -->
-        
+        <h2>Personal Information</h2>
+        <ul class="profile-list">
+            <li><strong>Name:</strong> {{ student.name }}</li>
+            <li><strong>Email:</strong> {{ student.email }}</li>
+            <li><strong>Student ID:</strong> {{ student.student_id }}</li>
+            <li><strong>Age:</strong> {{ student.age }}</li>
+            <li><strong>Gender:</strong> {{ student.gender }}</li>
+            <li><strong>Location:</strong> {{ student.location }}</li>
+            <li><strong>Parental Education:</strong> {{ student.parent_edu }}</li>
+            <li><strong>Education Level:</strong> {{ student.education_level }}</li>
+        </ul>
+        <h2>Academic Details</h2>
+        <ul class="profile-list">
+            <li><strong>Subjects & Marks:</strong>
+                <ul>
+                {% for subject, mark in student.subjects.items() %}
+                    <li>{{ subject }}: {{ mark }}</li>
+                {% endfor %}
+                </ul>
+                <li>
+    <strong>Average Marks:</strong>
+    {{
+        (student.subjects.values()|map('float')|sum / (student.subjects|length))|round(2)
+        if student.subjects|length > 0 else 'N/A'
+    }}
+</li>
+            </li>
+            {% if student.cpi_cgpa %}
+            <li><strong>CPI/CGPA:</strong> {{ student.cpi_cgpa }}</li>
+            {% endif %}
+            <li><strong>Class Rank:</strong> {{ student.class_rank }}</li>
+            <li><strong>Backlogs:</strong> {{ student.backlogs }}</li>
+        </ul>
+        <h2>Attendance & Participation</h2>
+        <ul class="profile-list">
+            <li><strong>Attendance %:</strong> {{ student.attendance }}</li>
+            <li><strong>Leaves Taken:</strong> {{ student.leaves }}</li>
+            <li><strong>Participation:</strong> {{ student.participation }}</li>
+            <li><strong>Project Submission:</strong> {{ student.project_ontime }}</li>
+        </ul>
+        <h2>Study Habits & Lifestyle</h2>
+        <ul class="profile-list">
+            <li><strong>Study Hours/Day:</strong> {{ student.study_hours }}</li>
+            <li><strong>Online Platforms:</strong> {{ student.platforms|join(', ') }}</li>
+            <li><strong>Study Style:</strong> {{ student.study_style }}</li>
+            <li><strong>Sports:</strong> {{ student.sports }}</li>
+            <li><strong>Clubs:</strong> {{ student.clubs }}</li>
+            <li><strong>Volunteer Work:</strong> {{ student.volunteer }}</li>
+            <li><strong>Sleep Hours/Day:</strong> {{ student.sleep_hours }}</li>
+            <li><strong>Screen Time/Day:</strong> {{ student.screen_time }}</li>
+            <li><strong>Stress Level:</strong> {{ student.stress }}</li>
+        </ul>
+        <h2>Future Aspirations</h2>
+        <ul class="profile-list">
+            <li><strong>Career Interest:</strong> {{ student.career_interest }}</li>
+            <li><strong>Higher Studies Plan:</strong> {{ student.higher_studies }}</li>
+            <li><strong>Internship Experience:</strong> {{ student.internship }}</li>
+        </ul>
+        <div style="margin-top: 24px;">
+            <a href="{{ url_for('update_info') }}" class="profile-edit-btn">✏️ Edit Profile</a>
+        </div>
     </div>
 </div>
+<style>
+.dashboard-main-box {
+    max-width: 900px;
+    width: 100%;
+    margin: 32px auto;
+    background: linear-gradient(120deg, #e3f0ff 0%, #7198bf 100%);
+    padding: 32px 32px 24px 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    color: #222;
+}
+
+.profile-list {
+    list-style: none;
+    padding-left: 0;
+    color: #222;
+    font-size: 1.08em;
+    margin-bottom: 24px;
+}
+
+.profile-list > li {
+    margin-bottom: 8px;
+}
+
+.profile-list ul {
+    margin: 0 0 0 18px;
+}
+
+.profile-list ul li {
+    color: #eb420a;
+    font-weight: bold;
+}
+
+h1 {
+    color: #e67e22;
+    margin-bottom: 18px;
+}
+
+h2 {
+    color: #27ae60;
+    margin-top: 32px;
+    margin-bottom: 12px;
+}
+
+strong {
+    color: #1761c6;
+}
+
+.profile-edit-btn {
+    display: inline-block;
+    background: #1761c6;
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.profile-edit-btn:hover {
+    background: #f7cb08;
+    color: #222;
+}
+.go-back-btn {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: #1761c6;
+    text-decoration: none;
+    font-weight: 500;
+}
+.go-back-btn:hover {
+    text-decoration: underline;
+}
+</style>
 {% endblock %}

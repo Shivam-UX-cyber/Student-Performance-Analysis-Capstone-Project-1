@@ -1,21 +1,268 @@
 {% extends "base.html" %}
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard_styles.css') }}">
 {% endblock %}
 {% block content %}
 <div class="dashboard-bg">
     <div class="dashboard-main-box">
         <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
-        <h1>📝 Update Info</h1>
-        <form method="POST">
+        <h1>📝 Student Input Form</h1>
+
+        <form method="POST" action="{{ url_for('update_info') }}">
+
+            <!-- Student Demographics -->
+            <h2>👤 Student Demographics</h2>
+
+
             <label>Name:</label>
-            <input type="text" name="name" value="{{ name }}" required>
-            <label>Email:</label>
-            <input type="email" name="email" value="{{ email }}" required>
-            <!-- Add more fields as needed -->
-            <button type="submit">Update</button>
+            <input type="text" name="name" placeholder="Your Name" value="{{ student.name if student else '' }}">
+
+            <label>Age:</label>
+            <input type="number" name="age" min="10" max="100" required value="{{ student.age if student else '' }}">
+
+            <label>Gender:</label>
+            <select name="gender" required>
+                <option value="">Select</option>
+                <option {% if student and student.gender=='Male' %}selected{% endif %}>Male</option>
+                <option {% if student and student.gender=='Female' %}selected{% endif %}>Female</option>
+                <option {% if student and student.gender=='Other' %}selected{% endif %}>Other</option>
+            </select>
+
+            <label>Location:</label>
+            <div style="margin-bottom:10px;">
+                <label>
+                    <input type="radio" name="location" value="City" required {% if student and student.location=='City'
+                        %}checked{% endif %}>
+                    City
+                </label>
+                <label style="margin-left:20px;">
+                    <input type="radio" name="location" value="Village" required {% if student and
+                        student.location=='Village' %}checked{% endif %}>
+                    Village
+                </label>
+            </div>
+
+            <label>Parental Education Level:</label>
+            <select name="parent_edu" required>
+                <option value="">Select</option>
+                <option {% if student and student.parent_edu=='No Formal Education' %}selected{% endif %}>No Formal
+                    Education</option>
+                <option {% if student and student.parent_edu=='School' %}selected{% endif %}>School</option>
+                <option {% if student and student.parent_edu=='UG' %}selected{% endif %}>UG</option>
+                <option {% if student and student.parent_edu=='PG' %}selected{% endif %}>PG</option>
+                <option {% if student and student.parent_edu=='PhD' %}selected{% endif %}>PhD</option>
+            </select>
+
+            <!-- Education Level -->
+            <label>Education Level:</label>
+<select name="education_level" id="education_level" required>
+    <option value="">Select</option>
+    <option value="school" {% if student and student.education_level=='school' %}selected{% endif %}>(1-12)School</option>
+    <option value="bsc" {% if student and student.education_level=='bsc' %}selected{% endif %}>B.Sc. college</option>
+    <option value="engineering" {% if student and student.education_level=='engineering' %}selected{% endif %}>Engineering college</option>
+    <option value="commerce" {% if student and student.education_level=='commerce' %}selected{% endif %}>Commerce college</option>
+    <option value="Arts" {% if student and student.education_level=='Arts' %}selected{% endif %}>Arts college</option>
+    <option value="Doctor" {% if student and student.education_level=='Doctor' %}selected{% endif %}>Doctor college</option>
+</select>
+            
+
+            <!-- Academic Details -->
+            <h2>📚 Academic Details</h2>
+            <!-- Subjects & Marks -->
+            <div style="margin-bottom:18px;">
+                <h3 style="margin-bottom:6px;">Subjects & Marks:</h3>
+                <div id="subjects-list">
+                    {% if student and student.subjects %}
+                    {% for subject, mark in student.subjects.items() %}
+                    <div class="subject-row" style="margin-bottom:8px;">
+                        <input type="text" name="subject_names[]" value="{{ subject }}" placeholder="Subject Name"
+                            required style="width:180px; margin-right:8px;">
+                        <input type="number" name="subject_marks[]" value="{{ mark }}" min="0" max="100"
+                            placeholder="Marks" required style="width:100px;" class="dynamic-marks">
+                        <button type="button" class="remove-subject-btn" style="margin-left:8px;">❌</button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <button type="button" id="add-subject-btn" style="margin-top:10px;">➕ Add Subject</button>
+                <label style="margin-top:10px;">Average Marks (auto-calculated):</label>
+                <input type="number" name="dynamic_avg" readonly id="dynamic-avg-marks">
+            </div>
+
+            <!-- CPI/CGPA for college streams only -->
+            <div id="cpi-cgpa-block" style="display:none;">
+
+                <label>CPI/CGPA: </label>
+                <input type="number" name="cpi_cgpa" min="0" max="10" step="0.01"
+                    value="{{ student.cpi_cgpa if student and student.cpi_cgpa else '' }}">
+            </div>
+
+
+            <!-- Common Academic Fields -->
+            <label>Class Rank:</label>
+            <input type="number" name="class_rank" min="1" required value="{{ student.class_rank if student else '' }}">
+
+            <label>Number of Backlogs:</label>
+            <input type="number" name="backlogs" min="0" required value="{{ student.backlogs if student else '' }}">
+
+            <!-- Attendance & Participation -->
+            <h2>🏫 Attendance & Participation</h2>
+            <label>Attendance Percentage:</label>
+            <input type="number" name="attendance" min="0" max="100" required
+                value="{{ student.attendance if student else '' }}">
+
+            <label>Number of Leaves Taken:</label>
+            <input type="number" name="leaves" min="0" required value="{{ student.leaves if student else '' }}">
+
+            <label>Participation in Class Activities:</label>
+            <select name="participation" required>
+                <option value="">Select</option>
+                <option {% if student and student.participation=='High' %}selected{% endif %}>High</option>
+                <option {% if student and student.participation=='Medium' %}selected{% endif %}>Medium</option>
+                <option {% if student and student.participation=='Low' %}selected{% endif %}>Low</option>
+                <option {% if student and student.participation=='None' %}selected{% endif %}>None</option>
+            </select>
+
+            <label for="project-submission">How often did you submit projects on time?</label>
+            <select name="project_ontime" id="project-submission">
+                <option value="">-- Select --</option>
+                <option value="always" {% if student and student.project_ontime=='always' %}selected{% endif %}>Always
+                </option>
+                <option value="mostly" {% if student and student.project_ontime=='mostly' %}selected{% endif %}>Mostly
+                </option>
+                <option value="sometimes" {% if student and student.project_ontime=='sometimes' %}selected{% endif %}>
+                    Sometimes</option>
+                <option value="rarely" {% if student and student.project_ontime=='rarely' %}selected{% endif %}>Rarely
+                </option>
+                <option value="never" {% if student and student.project_ontime=='never' %}selected{% endif %}>Never
+                </option>
+            </select>
+
+            <!-- Study Habits & Learning Behavior -->
+            <h2>📖 Study Habits & Learning Behavior</h2>
+            <label>Study Hours per Day:</label>
+            <input type="number" name="study_hours" min="0" max="24" required
+                value="{{ student.study_hours if student else '' }}">
+
+            <label>Use of Online Learning Platforms:</label>
+            <label><input type="checkbox" name="platforms[]" value="IIT PATNA" {% if student and 'IIT PATNA' in
+                    student.platforms %}checked{% endif %}> IIT PATNA</label>
+            <label><input type="checkbox" name="platforms[]" value="YouTube" {% if student and 'YouTube' in
+                    student.platforms %}checked{% endif %}> YouTube</label>
+            <label><input type="checkbox" name="platforms[]" value="Coursera" {% if student and 'Coursera' in
+                    student.platforms %}checked{% endif %}> Coursera</label>
+            <label><input type="checkbox" name="platforms[]" value="Udemy" {% if student and 'Udemy' in
+                    student.platforms %}checked{% endif %}> Udemy</label>
+            <label><input type="checkbox" name="platforms[]" value="Others" {% if student and 'Others' in
+                    student.platforms %}checked{% endif %}> Others</label>
+
+            <label>Study Style:</label>
+            <label> <input type="radio" name="study_style" value="Group Study" required {% if student and
+                    student.study_style=='Group Study' %}checked{% endif %}> Group Study</label>
+            <label><input type="radio" name="study_style" value="Self Study" required {% if student and
+                    student.study_style=='Self Study' %}checked{% endif %}> Self Study</label>
+
+            <!-- Extracurricular Activities -->
+            <h2>⚽ Extracurricular Activities</h2>
+            <label>Sports Participation:</label>
+            <label><input type="checkbox" name="sports" value="Yes" {% if student and student.sports=='Yes' %}checked{%
+                    endif %}> Yes</label>
+            
+
+            <label>Club Memberships:</label>
+            <select name="clubs" id="club">
+                <option value="">-- Select --</option>
+                <option value="none" {% if student and student.clubs=='none' %}selected{% endif %}>None</option>
+                <option value="cultural" {% if student and student.clubs=='cultural' %}selected{% endif %}>Cultural Club
+                </option>
+                <option value="sports" {% if student and student.clubs=='sports' %}selected{% endif %}>Sports Club
+                </option>
+                <option value="tech" {% if student and student.clubs=='tech' %}selected{% endif %}>Technical/Robotics
+                    Club</option>
+                <option value="literary" {% if student and student.clubs=='literary' %}selected{% endif %}>Literary Club
+                </option>
+                <option value="music_dance" {% if student and student.clubs=='music_dance' %}selected{% endif %}>
+                    Music/Dance Club</option>
+                <option value="drama" {% if student and student.clubs=='drama' %}selected{% endif %}>Drama/Theater Club
+                </option>
+                <option value="volunteer" {% if student and student.clubs=='volunteer' %}selected{% endif %}>Social
+                    Service/Volunteer Club</option>
+                <option value="student_union" {% if student and student.clubs=='student_union' %}selected{% endif %}>
+                    Student Union/Leadership Role</option>
+                <option value="other" {% if student and student.clubs=='other' %}selected{% endif %}>Others</option>
+            </select>
+
+            <label>Volunteer Work:</label>
+            <select name="volunteer" id="volunteer">
+                <option value="">-- Select --</option>
+                <option value="Yes" {% if student and student.volunteer=='Yes' %}selected{% endif %}>Yes</option>
+                <option value="No" {% if student and student.volunteer=='No' %}selected{% endif %}>No</option>
+            </select>
+
+            <!-- Psychological & Lifestyle Factors -->
+            <h2>🧠 Psychological & Lifestyle Factors</h2>
+            <label>Sleep Hours per Day:</label>
+            <input type="number" name="sleep_hours" min="0" max="24" required
+                value="{{ student.sleep_hours if student else '' }}">
+
+            <label>Screen Time per Day (in hours):</label>
+            <input type="number" name="screen_time" min="0" max="24" required
+                value="{{ student.screen_time if student else '' }}">
+
+            <label>Stress Level:</label>
+            <select name="stress" required>
+                <option value="">Select</option>
+                <option {% if student and student.stress=='Low' %}selected{% endif %}>Low</option>
+                <option {% if student and student.stress=='Medium' %}selected{% endif %}>Medium</option>
+                <option {% if student and student.stress=='High' %}selected{% endif %}>High</option>
+            </select>
+
+            <!-- Future Aspirations -->
+            <h2>🚀 Future Aspirations</h2>
+            <label>Career Interest:</label>
+            <select id="career-interest" name="career_interest">
+                <option value="">-- Select --</option>
+                <option value="software_engineer" {% if student and student.career_interest=='software_engineer'
+                    %}selected{% endif %}>Software Engineer</option>
+                <option value="data_scientist" {% if student and student.career_interest=='data_scientist' %}selected{%
+                    endif %}>Data Scientist / Analyst</option>
+                <option value="civil_services" {% if student and student.career_interest=='civil_services' %}selected{%
+                    endif %}>Civil Services (UPSC, BPSC, etc.)</option>
+                <option value="govt_exam" {% if student and student.career_interest=='govt_exam' %}selected{% endif %}>
+                    Government Exams (SSC, Railway, Banking)</option>
+                <option value="teacher" {% if student and student.career_interest=='teacher' %}selected{% endif %}>
+                    Teacher / Professor</option>
+                <option value="doctor" {% if student and student.career_interest=='doctor' %}selected{% endif %}>Doctor
+                    / Medical</option>
+                <option value="entrepreneur" {% if student and student.career_interest=='entrepreneur' %}selected{%
+                    endif %}>Entrepreneur / Business</option>
+                <option value="lawyer" {% if student and student.career_interest=='lawyer' %}selected{% endif %}>Law /
+                    Judiciary</option>
+                <option value="arts_media" {% if student and student.career_interest=='arts_media' %}selected{% endif
+                    %}>Arts / Media / Literature</option>
+                <option value="not_sure" {% if student and student.career_interest=='not_sure' %}selected{% endif %}>Not
+                    sure yet</option>
+                <option value="other" {% if student and student.career_interest=='other' %}selected{% endif %}>Other
+                </option>
+            </select>
+
+            <label>Higher Studies Plan:</label>
+            <label><input type="radio" name="higher_studies" value="Yes" required {% if student and
+                    student.higher_studies=='Yes' %}checked{% endif %}> Yes</label>
+            <label><input type="radio" name="higher_studies" value="No" required {% if student and
+                    student.higher_studies=='No' %}checked{% endif %}> No</label>
+            <label><input type="radio" name="higher_studies" value="Not Sure" required {% if student and
+                    student.higher_studies=='Not Sure' %}checked{% endif %}> Not Sure</label>
+
+            <label>Internship Experience:</label>
+            <label><input type="checkbox" name="internship" value="Yes" {% if student and student.internship=='Yes'
+                    %}checked{% endif %}> Yes</label>
+
+            <br><br>
+            <button type="submit">🎯 Submit</button>
         </form>
-        
     </div>
 </div>
+
+<script src="{{ url_for('static', filename='info.js') }}"></script>
 {% endblock %}
