@@ -527,7 +527,7 @@ def feedback():
         db.session.add(fb)
         db.session.commit()
         flash("Thank you for your feedback!", "success")
-        return redirect(url_for('feedback'))
+        return redirect(url_for('dashboard'))
 
     return render_template('feedback.html',hide_signin_btn=True)
 
