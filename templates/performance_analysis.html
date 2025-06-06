@@ -1,15 +1,208 @@
 {% extends "base.html" %}
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='analysis.css') }}">
 {% endblock %}
 {% block content %}
 <div class="dashboard-bg">
-    <div class="dashboard-main-box">
-        <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
-        <h1>📈 Performance Analysis</h1>
-        <p>Here you will see your academic trends, subject-wise marks, and analytics charts.</p>
-        <!-- Insert charts/graphs here -->
+  <div class="dashboard-main-box">
+    <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
+    <h1>📊 Performance Analysis</h1>
 
+    <!-- How to use this page -->
+    <div class="analysis-info-box">
+      <b>How to use this analysis:</b>
+      <ul><br>
+        <li>Each chart and number gives you insight into a different part of your academic and personal life.</li>
+        <li>Read the explanations below each chart to understand what it means for you.</li>
+        <li>Look for areas where your scores are low or imbalanced—these are opportunities for improvement!</li>
+      </ul>
     </div>
+
+    <!-- 1️⃣ Academic Performance Overview -->
+    <section>
+      <h2>Academic Performance</h2>
+      <div>
+        <b>Subject-wise Marks:</b>
+        <ul>
+          {% for subject, mark in subjects.items() %}
+          <li>{{ subject }}: {{ mark }}</li>
+          {% endfor %}
+        </ul>
+        {% if subject_marks_chart %}
+        <img src="{{ url_for('static', filename=subject_marks_chart) }}" alt="Subject Marks Chart" class="chart-img">
+        <div class="chart-explanation">
+          <b>How to read:</b> Each bar shows your marks in a subject. Taller bars mean higher marks. Look for subjects
+          where your bar is much lower—these may need more focus.
+        </div><br>
+        {% endif %}
+
+      </div>
+      <div>
+        <b>Average Score:</b>
+        <ul>{{ avg_marks|default('-')|round(2) }}</ul>
+        <div class="progress-bar-bg">
+          {% if avg_marks and avg_marks|float > 0 %}
+          <div class="progress-bar-fill avg-bar" data-width="{{ avg_marks|float|round(2) }}"></div>
+          {% endif %}
+        </div>
+        <div class="chart-explanation">
+          <b>How to read:</b> This is your overall average across all subjects.
+        </div><br>
+      </div>
+      <div>
+        <b>Backlogs:</b>
+        <ul> {{ backlogs|default('-') }}</ul>
+        {% if backlogs|int > 2 %}
+        <span class="critical-label">Critical</span>
+        {% endif %}
+        <div class="chart-explanation">
+          <b>How to read:</b> More than 2 backlogs is considered critical and needs attention.
+        </div><br>
+      </div>
+      <div class="section-result">
+        <b>Result : </b> {{ academic_label }}
+      </div>
+    </section>
+
+    <!-- 2️⃣ Attendance & Class Participation -->
+    <section>
+      <h2>Attendance & Participation</h2>
+      <div>
+        <b>Attendance:</b>
+        <ul> {{ attendance|default('-') }}% </ul>
+        <div class="chart-explanation">
+          <b>How to read:</b> Higher attendance often correlates with better academic performance.
+        </div><br>
+      </div>
+      <div>
+        <b>Participation:</b>
+        <ul> {{ student.participation|default('-') }}</ul>
+        <div class="chart-explanation">
+          <b>How to read:</b> Active participation in class and activities can boost your learning and confidence.
+        </div><br>
+      </div>
+      <div class="section-result">
+        <b>Result : </b> {{ attendance_label }}
+      </div>
+    </section>
+
+    <!-- 3️⃣ Study Habits -->
+    <section>
+      <h2>Study Habits</h2>
+      <div>
+        <b>Study Hours/Day:</b>
+        <ul> {{ study_hours|default('-') }}</ul>
+        {% if study_hours_chart %}
+        <img src="{{ url_for('static', filename=study_hours_chart) }}" alt="Study Hours Chart" class="chart-img-small">
+        <div class="chart-explanation">
+          <b>How to read:</b> This shows your average daily study hours. 6–8 hours is usually healthy for most students.
+        </div><br>
+        {% endif %}
+      </div>
+      <div>
+        <b>Online Platforms Used:</b>
+        <ul>{{ platforms|join(', ') if platforms else '-' }}</ul>
+        <div class="chart-explanation">
+          <b>How to read:</b> Using a mix of online and offline resources can help you learn better.
+        </div><br>
+      </div>
+      <div>
+        <b>Study Style:</b>
+        <ul>{{ student.study_style|default('-') }}</ul>
+        <div class="chart-explanation">
+          <b>How to read:</b> Group study can help with discussions, while self-study helps with focus. Choose what
+          works best for you!
+        </div><br>
+      </div>
+      <div class="section-result">
+        <b>Result : </b> {{ study_label }}
+      </div>
+    </section>
+
+    <!-- 4️⃣ Lifestyle & Psychology -->
+    <section>
+      <h2>Lifestyle & Psychology</h2>
+      <div>
+        <b>Sleep Hours/Day:</b>
+        <ul>{{ sleep_hours|default('-') }}</ul>
+      </div>
+      <div>
+        <b>Stress Level:</b>
+        <ul> {{ stress|default('-') }}</ul>
+      </div>
+      <div>
+        <b>Screen Time/Day:</b>
+        <ul>{{ screen_time|default('-') }}</ul>
+      </div>
+      {% if radar_chart %}
+      <div><br><br>
+        <b>Balance Radar:</b>
+        <img src="{{ url_for('static', filename=radar_chart) }}" alt="Lifestyle Radar" class="chart-img-small">
+        <div class="chart-explanation">
+          <b>How to read:</b> Each axis shows your value for Sleep, Screen Time, Stress, and Study Hours.<br>
+          The further out from the center, the higher the value. Ideally, the shape should be balanced and not too
+          "spiky".<br>
+          <i>If this chart is confusing, focus on keeping all four habits in a healthy range.</i>
+        </div><br>
+      </div>
+      {% endif %}
+      <div class="section-result">
+        <b>Result : </b> {{ lifestyle_label }}
+      </div>
+    </section>
+
+    <!-- 5️⃣ Extracurricular Activities -->
+    <section>
+      <h2>Extracurricular Activities</h2>
+      <div>
+        <b>Clubs:</b>
+        <ul>{{ student.clubs|default('-') }}</ul>
+      </div>
+      <div>
+        <b>Volunteer:</b>
+        <ul>{{ student.volunteer|default('-') }}</ul>
+      </div>
+      <div>
+        <b>Sports:</b>
+        <ul>{{ student.sports|default('-') }}</ul>
+      </div>
+      <div class="chart-explanation">
+        <b>How to read:</b> Participation in activities outside academics helps in overall personality development.
+      </div><br>
+      <div class="section-result">
+        <b>Result : </b> {{ extra_label }}
+      </div>
+    </section>
+
+    <!-- 6️⃣ Final Summary: Academic Health Score -->
+    <section>
+      <h2>Academic Health Score</h2>
+      <div class="health-score">
+        {{ health_score|default('-') }}% <span>{{ health_label|default('-') }}</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill health-bar" data-width="{{ health_score|default(0) }}"></div>
+      </div>
+      <div class="chart-explanation">
+        <b>How to read:</b> This is a combined score based on your marks, attendance, study hours, and backlogs. Aim for
+        a higher score for better academic health!
+      </div><br>
+    </section>
+  </div>
 </div>
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.progress-bar-fill').forEach(function (bar) {
+      var width = bar.getAttribute('data-width');
+      if (width) {
+        // Ensure width is between 0 and 100
+        width = Math.max(0, Math.min(100, parseFloat(width)));
+        bar.style.width = width + "%";
+      }
+    });
+  });
+</script>
+{% endblock %}
 {% endblock %}

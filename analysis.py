@@ -1,42 +1,51 @@
-import pandas as pd
+import os
+os.environ['MPLCONFIGDIR'] = os.getcwd() + "/configs/"
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os
+import numpy as np
+import pandas as pd
 
-def load_data(file_path):
-    try:
-        df = pd.read_csv(file_path)
-        return df
-    except Exception as e:
-        print(f"Error reading file: {e}")
+def plot_subject_marks(subjects, email, plots_dir):
+    if not subjects:
         return None
-      
-def generate_summary(df):
-    summary = {
-        "Total Students": len(df),
-        "Average Marks": df['Marks'].mean(),
-        "Highest Marks": df['Marks'].max(),
-        "Lowest Marks": df['Marks'].min(),
-        "Pass Count": (df['Marks'] >= 33).sum(),
-        "Fail Count": (df['Marks'] < 33).sum()
-    }
-    return summary
-
-def plot_distribution(df, save_path='static/marks_distribution.png'):
-    plt.figure(figsize=(8, 5))
-    sns.histplot(df['Marks'], bins=10, kde=True)
-    plt.title("Marks Distribution")
-    plt.xlabel("Marks")
-    plt.ylabel("Number of Students")
+    plt.figure(figsize=(6, 3))
+    sns.barplot(x=list(subjects.keys()), y=list(map(float, subjects.values())), palette="Blues_d")
+    plt.title("Subject-wise Marks")
+    plt.ylabel("Marks")
     plt.tight_layout()
-    plt.savefig(save_path)
+    filename = f"{email}_subject_marks.png"
+    path = os.path.join(plots_dir, filename)
+    plt.savefig(path)
     plt.close()
+    return f"plots/{filename}"
 
-def plot_top_students(df, save_path='static/top_students.png'):
-    top_df = df.sort_values(by='Marks', ascending=False).head(5)
-    plt.figure(figsize=(8, 5))
-    sns.barplot(x='Name', y='Marks', data=top_df, palette='viridis')
-    plt.title("Top 5 Students")
+def plot_study_hours(study_hours, email, plots_dir):
+    plt.figure(figsize=(3, 3))
+    plt.bar(["Study Hours"], [study_hours], color="#4caf50")
+    plt.ylim(0, 12)
+    plt.title("Study Hours/Day")
     plt.tight_layout()
-    plt.savefig(save_path)
+    filename = f"{email}_study_hours.png"
+    path = os.path.join(plots_dir, filename)
+    plt.savefig(path)
     plt.close()
+    return f"plots/{filename}"
+
+def plot_radar_chart(sleep_hours, screen_time, stress, study_hours, email, plots_dir):
+    labels = ['Sleep', 'Screen', 'Stress', 'Study']
+    stats = [sleep_hours, screen_time, stress, study_hours]
+    angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False).tolist()
+    stats += stats[:1]
+    angles += angles[:1]
+    fig, ax = plt.subplots(figsize=(4, 4), subplot_kw=dict(polar=True))
+    ax.plot(angles, stats, 'o-', linewidth=2)
+    ax.fill(angles, stats, alpha=0.25)
+    ax.set_thetagrids(np.degrees(angles[:-1]), labels)
+    ax.set_title("Lifestyle Radar")
+    filename = f"{email}_radar.png"
+    path = os.path.join(plots_dir, filename)
+    plt.savefig(path)
+    plt.close()
+    return f"plots/{filename}"

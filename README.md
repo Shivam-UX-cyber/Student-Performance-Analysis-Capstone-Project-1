@@ -1,4 +1,5 @@
 # Student Performance Analysis Portal
+(Individual students performance analysis project , because we are taking data from all level of students, so there is no criteria to create overall performance among all students)
 
 A flask based web application for students and educators to analyze academic performance, get AI-driven insights, and manage accounts securely.
 
@@ -20,6 +21,12 @@ A flask based web application for students and educators to analyze academic per
 - **Mobile Responsive:** Clean UI for desktop and mobile.
 - **Data Visualization:** (If implemented) Performance analysis and AI prediction modules.
 - **Security:** Passwords are hashed; session-based access control.
+- Individual student dashboard with:
+  - Subject-wise marks bar chart
+  - Study hours visualization
+  - Lifestyle radar chart (sleep, screen time, stress, study hours)
+- Responsive design
+- plots are generated per student and saved in plots (not tracked in git).
 
 
 ---

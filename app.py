@@ -8,6 +8,7 @@ import random,os,json, uuid
 from datetime import datetime
 from flask import abort
 from dotenv import load_dotenv
+from analysis import plot_radar_chart, plot_study_hours, plot_subject_marks
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -85,6 +86,17 @@ class Feedback(db.Model):
     rating = db.Column(db.String(10))
     recommend = db.Column(db.String(10))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+def parse_stress(stress_value):
+    if isinstance(stress_value, (int, float)):
+        return float(stress_value)
+    if isinstance(stress_value, str):
+        try:
+            return float(stress_value)
+        except ValueError:
+            mapping = {'low': 3, 'medium': 6, 'high': 9}
+            return mapping.get(stress_value.strip().lower(), 5)
+    return 5
 
 # Routes
 @app.route('/')
@@ -495,10 +507,111 @@ def update_info():
             "internship": student_input.internship
         }
     return render_template('update_info.html', student=student, hide_signin_btn=True)
+
 @app.route('/performance_analysis')
 def performance_analysis():
-    return render_template('performance_analysis.html', hide_signin_btn=True)
+    if 'email' not in session:
+        return redirect(url_for('signin'))
 
+    student_input = StudentInput.query.filter_by(email=session['email']).order_by(StudentInput.id.desc()).first()
+    if not student_input:
+        flash("Please complete your profile information.", "info")
+        return redirect(url_for('update_info'))
+
+    subjects = json.loads(student_input.subjects) if student_input.subjects else {}
+    platforms = json.loads(student_input.platforms) if student_input.platforms else []
+    avg_marks = round(sum(map(float, subjects.values())) / len(subjects), 2) if subjects else 0
+    backlogs = int(student_input.backlogs or 0)
+    attendance = float(student_input.attendance or 0)
+    study_hours = float(student_input.study_hours or 0)
+    sleep_hours = float(student_input.sleep_hours or 0)
+    screen_time = float(student_input.screen_time or 0)
+    stress = parse_stress(student_input.stress)
+
+    # Academic Health Score (overall)
+    health_score = int((avg_marks * 0.4) + (attendance * 0.2) + (study_hours * 10 * 0.2) - (backlogs * 10))
+    health_score = max(0, min(100, health_score))
+    if health_score >= 80:
+        health_label = "🌟 Excellent"
+    elif health_score >= 60:
+        health_label = "👍 Good"
+    elif health_score >= 40:
+        health_label = "⚠️ Average"
+    else:
+        health_label = "🔻 Weak"
+
+    # --- Section Labels ---
+    # Academic Section
+    if avg_marks >= 80:
+        academic_label = "Excellent"
+    elif avg_marks >= 60:
+        academic_label = "Good"
+    elif avg_marks >= 40:
+        academic_label = "Average"
+    else:
+        academic_label = "Needs Improvement"
+
+    # Attendance Section
+    if attendance >= 90:
+        attendance_label = "Excellent"
+    elif attendance >= 75:
+        attendance_label = "Good"
+    elif attendance >= 60:
+        attendance_label = "Average"
+    else:
+        attendance_label = "Needs Improvement"
+
+    # Study Habits Section
+    if study_hours >= 6:
+        study_label = "Healthy"
+    elif study_hours >= 3:
+        study_label = "Moderate"
+    else:
+        study_label = "Needs More Focus"
+
+    # Lifestyle Section
+    if sleep_hours >= 7 and stress <= 5 and screen_time <= 4:
+        lifestyle_label = "Balanced"
+    else:
+        lifestyle_label = "Needs Attention"
+
+    # Extracurricular Section
+    if student_input.clubs or student_input.volunteer or student_input.sports:
+        extra_label = "Active"
+    else:
+        extra_label = "Consider Participating"
+
+    # --- Plots ---
+    plots_dir = os.path.join('static', 'plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    subject_marks_chart = plot_subject_marks(subjects, session['email'], plots_dir)
+    study_hours_chart = plot_study_hours(study_hours, session['email'], plots_dir)
+    radar_chart = plot_radar_chart(sleep_hours, screen_time, stress, study_hours, session['email'], plots_dir)
+
+    return render_template(
+        'performance_analysis.html',
+        student=student_input,
+        subjects=subjects,
+        avg_marks=avg_marks,
+        backlogs=backlogs,
+        attendance=attendance,
+        study_hours=study_hours,
+        sleep_hours=sleep_hours,
+        screen_time=screen_time,
+        stress=stress,
+        platforms=platforms,
+        health_score=health_score,
+        health_label=health_label,
+        academic_label=academic_label,
+        attendance_label=attendance_label,
+        study_label=study_label,
+        lifestyle_label=lifestyle_label,
+        extra_label=extra_label,
+        subject_marks_chart=subject_marks_chart,
+        study_hours_chart=study_hours_chart,
+        radar_chart=radar_chart,
+        hide_signin_btn=True
+    )
 @app.route('/ai_prediction')
 def ai_prediction():
     # Show ML prediction results
