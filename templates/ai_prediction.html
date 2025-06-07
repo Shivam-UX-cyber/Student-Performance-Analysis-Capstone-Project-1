@@ -1,15 +1,93 @@
 {% extends "base.html" %}
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='analysis.css') }}">
 {% endblock %}
 {% block content %}
-
 <div class="dashboard-bg">
     <div class="dashboard-main-box">
         <a href="{{ url_for('dashboard') }}" class="go-back-btn">⬅ Back to Dashboard</a>
-        <h1>🧠 AI Prediction</h1>
-        <p>Your predicted performance will appear here based on your data and study habits.</p>
-        <!-- Show prediction results and suggestions -->
-    </div>
-</div>
-{% endblock %}
+        <h1>🤖 AI Predictions & Personalized Suggestions</h1>
+        <b class="analysis-info-box">Insights about your future performance and tailored advice to help you improve.</b>
+
+        <!-- 1. Future Performance Prediction -->
+        <section>
+            <h2>📈 Future Performance Prediction</h2>
+            <div>
+                <b><strong>Predicted Final Score:</strong></b>
+                <ul>{{ predicted_score|default('N/A') }} / 100</ul>
+            </div>
+            <div>
+                <b><strong>Confidence Level:</strong></b>
+                <ul> {{ confidence|default('N/A') }}% </ul>
+            </div>
+            {% if predicted_score %}
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill"></div>
+            </div>
+            {% endif %}
+            <div class="chart-explanation">
+               This score is predicted based on your current performance, attendance, study habits, and lifestyle
+                    factors.
+            </div>
+
+        </section>
+
+        <!-- 2. Improvement Suggestions -->
+        <section>
+            <h2>💡 Improvement Suggestions</h2>
+            {% if suggestions %}
+            <ul>
+                {% for suggestion in suggestions %}
+                <li>{{ suggestion }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <b>No specific suggestions at this time. Keep up the good work!</b>
+            {% endif %}
+        </section>
+
+        <!-- 3. Motivational Messages -->
+        <section>
+            <h2>🌟 Motivational Message</h2>
+            <ul>
+                <li>Stay focused and keep pushing forward!</li>
+                <li>Every small step counts towards your success.</li>
+                <li>Remember, consistency is key to achieving your goals.</li>
+            </ul>
+            <b>Here's a motivational quote to inspire you:</b>
+            <br>
+            <blockquote>
+                <ul>
+                "{{ motivational_quote|default('Believe in yourself and all that you are. Know that there is something
+                inside you that is greater than any obstacle.') }}"
+                </ul>
+            </blockquote>
+        </section>
+
+        <!-- 4. Action Plan / To-Do List -->
+        <section>
+            <h2>📝 Your Action Plan</h2>
+            {% if action_plan %}
+            <ul>
+                {% for step in action_plan %}
+                <li>{{ step }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <b>Your personalized action plan will appear here once suggestions are generated.</b>
+            {% endif %}
+        </section>
+
+        <!-- 5. Risk Alerts / Warnings -->
+        {% if risk_alert %}
+        <section>
+            <h2>⚠️ Risk Alert</h2>
+            <ul>{{ risk_alert }}</ul>
+            <div class="chart explanation">
+            Please consider reaching out to your teachers or counselors for additional support.
+            </div>
+        </section>
+        {% endif %}
+
+
+        {% endblock %}
