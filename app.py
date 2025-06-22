@@ -87,12 +87,6 @@ class Feedback(db.Model):
     recommend = db.Column(db.String(10))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-
-
-with app.app_context():
-    db.create_all()
-
-
 def parse_stress(stress_value):
     if isinstance(stress_value, (int, float)):
         return float(stress_value)
