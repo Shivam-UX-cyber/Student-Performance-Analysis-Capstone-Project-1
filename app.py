@@ -19,7 +19,7 @@ MAIL_USERNAME = os.getenv('MAIL_USERNAME')
 MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 
 # SQLAlchemy config
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'users.db')
 db = SQLAlchemy(app)
 
 # Flask-Mail config
@@ -35,14 +35,14 @@ class UserLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    user = db.relationship('User', backref='logs')  # <-- Add this line
+    user = db.relationship('User', backref='logs') 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)  # Add this line
+    is_admin = db.Column(db.Boolean, default=False)  
 
 class StudentInput(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -319,7 +319,121 @@ def dashboard():
     if 'name' in session:
         name = session['name']
         email = session['email']
-        return render_template('dashboard.html', name=name, email=email,hide_signin_btn=True)
+
+        student = StudentInput.query.filter_by(email=email).order_by(StudentInput.id.desc()).first()
+
+        profile_summary = None
+        if student:
+            profile_summary = {
+                "name": student.name,
+                "email": student.email,
+                "student_id": student.student_id,
+                "age": student.age,
+                "gender": student.gender,
+                "education_level": student.education_level,
+                "cpi_cgpa": student.cpi_cgpa,
+                "class_rank": student.class_rank,
+            }
+
+        performance_summary = None
+        ai_summary = None  # <-- Add this
+
+        if student:
+            subjects = json.loads(student.subjects) if student.subjects else {}
+            avg_marks = round(sum(map(float, subjects.values())) / len(subjects), 2) if subjects else 0
+            backlogs = int(student.backlogs or 0)
+            attendance = float(student.attendance or 0)
+            study_hours = float(student.study_hours or 0)
+            sleep_hours = float(student.sleep_hours or 0)
+            screen_time = float(student.screen_time or 0)
+            stress = parse_stress(student.stress)
+
+            # Academic Health Score (overall)
+            health_score = int((avg_marks * 0.4) + (attendance * 0.2) + (study_hours * 10 * 0.2) - (backlogs * 10))
+            health_score = max(0, min(100, health_score))
+            if health_score >= 80:
+                health_label = "🌟 Excellent"
+            elif health_score >= 60:
+                health_label = "👍 Good"
+            elif health_score >= 40:
+                health_label = "⚠️ Average"
+            else:
+                health_label = "🔻 Weak"
+
+            # Academic Section
+            if avg_marks >= 80:
+                academic_label = "Excellent"
+            elif avg_marks >= 60:
+                academic_label = "Good"
+            elif avg_marks >= 40:
+                academic_label = "Average"
+            else:
+                academic_label = "Needs Improvement"
+
+            # Attendance Section
+            if attendance >= 90:
+                attendance_label = "Excellent"
+            elif attendance >= 75:
+                attendance_label = "Good"
+            elif attendance >= 60:
+                attendance_label = "Average"
+            else:
+                attendance_label = "Needs Improvement"
+
+            # Study Habits Section
+            if study_hours >= 6:
+                study_label = "Healthy"
+            elif study_hours >= 3:
+                study_label = "Moderate"
+            else:
+                study_label = "Needs More Focus"
+
+            # Lifestyle Section
+            if sleep_hours >= 7 and stress <= 5 and screen_time <= 4:
+                lifestyle_label = "Balanced"
+            else:
+                lifestyle_label = "Needs Attention"
+
+            # Extracurricular Section
+            if student.clubs or student.volunteer or student.sports:
+                extra_label = "Active"
+            else:
+                extra_label = "Consider Participating"
+
+            performance_summary = {
+                "health_score": health_score,
+                "health_label": health_label,
+                "academic_label": academic_label,
+                "attendance_label": attendance_label,
+                "study_label": study_label,
+                "lifestyle_label": lifestyle_label,
+                "extra_label": extra_label,
+            }
+
+            # --- AI Prediction Quick View ---
+            predicted_score = (
+                (avg_marks * 0.5) +
+                (attendance or 0) * 0.2 +
+                (study_hours or 0) * 5 -
+                (backlogs or 0) * 5
+            )
+            predicted_score = max(0, min(100, predicted_score))
+            confidence = 80  # Static for now
+
+            ai_summary = {
+                "predicted_score": round(predicted_score, 2),
+                "confidence": confidence
+            }
+
+        return render_template(
+            'dashboard.html',
+            name=name,
+            email=email,
+            profile_summary=profile_summary,
+            performance_summary=performance_summary,
+            ai_summary=ai_summary,  # <-- Pass to template
+            hide_signin_btn=True
+        )
     else:
         return redirect(url_for('signin'))
 
@@ -612,10 +726,80 @@ def performance_analysis():
         radar_chart=radar_chart,
         hide_signin_btn=True
     )
+
 @app.route('/ai_prediction')
 def ai_prediction():
-    # Show ML prediction results
-    return render_template('ai_prediction.html', hide_signin_btn=True)
+    if 'email' not in session:
+        return redirect(url_for('signin'))
+
+    # Fetch student data from your database
+    student = StudentInput.query.filter_by(email=session['email']).first()
+    if not student:
+        flash("No data found for this student.", "danger")
+        return redirect(url_for('dashboard'))
+
+    # Calculate average marks from the 'subjects' field (dummy logic)
+    import json
+    try:
+        subjects_dict = json.loads(student.subjects.replace('""', '"').replace("'", '"'))
+        avg_marks = sum(float(v) for v in subjects_dict.values()) / len(subjects_dict) if subjects_dict else 0
+    except Exception:
+        avg_marks = 0
+
+    # Dummy prediction logic (simple formula)
+    predicted_score = (
+        (avg_marks * 0.5) +
+        (student.attendance or 0) * 0.2 +
+        (student.study_hours or 0) * 5 -
+        (student.backlogs or 0) * 5
+    )
+    predicted_score = max(0, min(100, predicted_score))  # Clamp between 0 and 100
+    confidence = 80  # Static value for now
+
+    # Suggestions and action plan logic
+    suggestions = []
+    if (student.study_hours or 0) < 2:
+        suggestions.append("Increase your daily study hours to at least 2.")
+    if (student.sleep_hours or 0) < 7:
+        suggestions.append("Ensure you get at least 7 hours of sleep daily.")
+    if (student.screen_time or 0) > 4:
+        suggestions.append("Reduce your screen time to less than 4 hours daily.")
+    if (student.stress or '').lower() == 'high':
+        suggestions.append("Manage your stress levels through relaxation techniques.")
+    if (student.cpi_cgpa or 0) < 6:
+        suggestions.append("Focus on improving your CPI/CGPA to above 6.")
+    if (student.attendance or 0) < 75:
+        suggestions.append("Improve your attendance for better results.")
+    if (student.backlogs or 0) > 0:
+        suggestions.append("Focus on clearing your backlogs.")
+    if (student.class_rank or 0) > 50:
+        suggestions.append("Aim to improve your class rank by focusing on weak subjects.")
+    if (str(student.project_ontime or '').strip().lower() in ['never','sometimes', 'rarely']):
+        suggestions.append("Ensure you submit your projects on time to avoid penalties.")
+    if not suggestions:
+        suggestions.append("Keep up the good work!")
+
+    action_plan = [
+        "Revise weak subjects regularly.",
+        "Maintain consistent study hours.",
+        "Seek help from teachers if needed."
+    ]
+
+    motivational_quote = "Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle."
+    risk_alert = None
+    if predicted_score < 70:
+        risk_alert = "Your predicted score is below 70. Please focus on your studies and seek help if needed."
+    print("Predicted Score:", predicted_score, "Confidence:", confidence)
+    return render_template(
+        'ai_prediction.html',
+        predicted_score=round(predicted_score, 2),
+        confidence=confidence,
+        motivational_quote=motivational_quote,
+        suggestions=suggestions,
+        action_plan=action_plan,
+        risk_alert=risk_alert,
+        hide_signin_btn=True
+    )
 
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():

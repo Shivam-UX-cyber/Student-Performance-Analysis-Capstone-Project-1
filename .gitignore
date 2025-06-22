@@ -2,6 +2,7 @@
 env/
 venv/
 .env
+instance/
 static/plots/
 static/*.png
 

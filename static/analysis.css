@@ -191,12 +191,26 @@ ul {
   padding-left: 24px;
 }
 
-
-
 b {
   font-size: 1.2em;
   
   color: #222;
+}
+
+span {
+  font-weight: bold;
+  color: #1976d2;
+}
+
+blockquote {
+  background: #f0f4ff;
+  border-left: 4px solid #3d5afe;
+  padding: 12px 20px;
+  margin: 16px 0;
+  font-style: italic;
+  color: #424242;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(60,80,180,0.04);
 }
 
 /* Progress bar animation using JS */

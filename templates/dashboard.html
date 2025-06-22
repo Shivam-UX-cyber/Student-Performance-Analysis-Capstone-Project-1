@@ -16,7 +16,6 @@
                 <button class="dropbtn"> ☰ </button>
                 <div class="dropdown-content">
                     <a href="{{ url_for('profile') }}">👤 View Profile</a>
-
                     <a href="{{ url_for('performance_analysis') }}">📈 Performance Analysis</a>
                     <a href="{{ url_for('update_info') }}">📝 Update Info</a>
                     <a href="{{ url_for('ai_prediction') }}">🧠 AI Prediction</a>
@@ -25,7 +24,52 @@
                 </div>
             </div>
         </div>
-        <!-- Add more dashboard content here -->
+
+        {% if profile_summary %}
+        <div class="dashboard-summary-box">
+            <h3>👤 Profile Summary</h3>
+            <ul>
+                <li><b>Name:</b> {{ profile_summary.name }}</li>
+                <li><b>Email:</b> {{ profile_summary.email }}</li>
+                <li><b>Student ID:</b> {{ profile_summary.student_id }}</li>
+                <li><b>Age:</b> {{ profile_summary.age }}</li>
+                <li><b>Gender:</b> {{ profile_summary.gender }}</li>
+                <li><b>Education Level:</b> {{ profile_summary.education_level }}</li>
+                <li><b>CPI/CGPA:</b> {{ profile_summary.cpi_cgpa }}</li>
+                <li><b>Class Rank:</b> {{ profile_summary.class_rank }}</li>
+            </ul>
+            <a href="{{ url_for('profile') }}" class="btn btn-primary btn-sm">View Full Profile</a>
+        </div>
+        {% endif %}
+
+        <!-- Performance Analysis Quick Review -->
+        {% if performance_summary %}
+        <div class="dashboard-summary-box">
+            <h3>📊 Performance Analysis (Quick Review)</h3>
+            <ul>
+                <li><b>Health Score:</b> {{ performance_summary.health_score }}%</li>
+                <li><b>Health Label:</b> {{ performance_summary.health_label }}</li>
+                <li><b>Attendance Label:</b> {{ performance_summary.attendance_label }}</li>
+                <li><b>Study Label:</b> {{ performance_summary.study_label }}</li>
+                <li><b>Lifestyle Label:</b> {{ performance_summary.lifestyle_label }}</li>
+                <li><b>Extracurricular Label:</b> {{ performance_summary.extra_label }}</li>
+            </ul>
+            <a href="{{ url_for('performance_analysis') }}" class="btn btn-primary btn-sm">See Full Analysis</a>
+        </div>
+        {% endif %}
+
+        <!-- AI Prediction Quick View -->
+        {% if ai_summary %}
+        <div class="dashboard-summary-box">
+            <h3>🤖 AI Prediction (Quick View)</h3>
+            <ul>
+                <li><b>Predicted Score:</b> {{ ai_summary.predicted_score }} / 100</li>
+                <li><b>Confidence:</b> {{ ai_summary.confidence }}%</li>
+            </ul>
+            <a href="{{ url_for('ai_prediction') }}" class="btn btn-primary btn-sm">See Full Prediction</a>
+        </div>
+        {% endif %}
     </div>
 </div>
+
 {% endblock %}

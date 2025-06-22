@@ -158,8 +158,8 @@
                     student.platforms %}checked{% endif %}> Udemy</label>
             <label><input type="checkbox" name="platforms[]" value="Others" {% if student and 'Others' in
                     student.platforms %}checked{% endif %}> Others</label>
-            <label><input type="checkbox" name="platforms[]" value="Studying offline" {% if student and 'Studying offline' in
-                    student.platforms %}checked{% endif %}> Studying offline</label>
+            <label><input type="checkbox" name="platforms[]" value="Studying offline" {% if student
+                    and 'Studying offline' in student.platforms %}checked{% endif %}> Studying offline</label>
 
             <label>Study Style:</label>
             <label> <input type="radio" name="study_style" value="Group Study" required {% if student and
