@@ -240,7 +240,6 @@ body {
 /* Fullscreen Dashboard Container */
 .dashboard-bg {
     min-height: 100vh;
-    /* width: 100vw;  <-- Remove this line */
     background: #2e2e2ee7 !important; 
     display: flex;
     align-items: center;

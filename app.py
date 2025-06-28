@@ -1,12 +1,10 @@
 # app.py
-from flask import Flask, render_template, request, redirect, url_for, session,flash
-from datetime import timedelta
+from flask import Flask, render_template, request, redirect, url_for, session,flash , abort
+from datetime import timedelta , datetime
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import random,os,json, uuid
-from datetime import datetime
-from flask import abort
 from dotenv import load_dotenv
 from analysis import plot_radar_chart, plot_study_hours, plot_subject_marks
 
@@ -135,6 +133,49 @@ def support():
 def learn_more():
     return render_template('learn_more.html',gray_bg=True)
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        # Duplicate email check
+        if User.query.filter_by(email=email).first():
+            flash("Email already registered. Please sign in.", "error")
+            return redirect(url_for('signup'))
+
+        # Password match check
+        if password != confirm_password:
+            flash("Passwords do not match. Please try again.", "error")
+            return redirect(url_for('signup'))
+
+        # Password strength check
+        import re
+        pattern = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,}$'
+        if not re.match(pattern, password):
+            flash("Password must be at least 6 characters, include a letter, a number, and a special character.", "error")
+            return redirect(url_for('signup'))
+
+        hashed_password = generate_password_hash(password)
+        session['signup_password'] = hashed_password
+        otp = str(random.randint(100000, 999999))
+        session['signup_otp'] = otp
+        session['signup_name'] = name
+        session['signup_email'] = email
+
+        msg = Message('Your OTP Code', sender=app.config['MAIL_USERNAME'], recipients=[email])
+        msg.body = f'Your OTP code is {otp}'
+        try:
+            mail.send(msg)
+        except Exception as e:
+            flash(f"Error sending OTP email: {e}", "error")
+            return redirect(url_for('signup'))
+        flash("OTP sent to your email. Please verify.", "success")
+        return redirect(url_for('verify_signup_otp'))
+    return render_template('signup.html', hide_signin_btn=True)
+
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
@@ -205,49 +246,6 @@ def verify_signup_otp():
             flash("Invalid OTP. Please try again.", "error")
             return redirect(url_for('verify_signup_otp'))
     return render_template('verify_otp.html',hide_signin_btn=True)
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
-
-        # Duplicate email check
-        if User.query.filter_by(email=email).first():
-            flash("Email already registered. Please sign in.", "error")
-            return redirect(url_for('signup'))
-
-        # Password match check
-        if password != confirm_password:
-            flash("Passwords do not match. Please try again.", "error")
-            return redirect(url_for('signup'))
-
-        # Password strength check
-        import re
-        pattern = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,}$'
-        if not re.match(pattern, password):
-            flash("Password must be at least 6 characters, include a letter, a number, and a special character.", "error")
-            return redirect(url_for('signup'))
-
-        hashed_password = generate_password_hash(password)
-        session['signup_password'] = hashed_password
-        otp = str(random.randint(100000, 999999))
-        session['signup_otp'] = otp
-        session['signup_name'] = name
-        session['signup_email'] = email
-
-        msg = Message('Your OTP Code', sender=app.config['MAIL_USERNAME'], recipients=[email])
-        msg.body = f'Your OTP code is {otp}'
-        try:
-            mail.send(msg)
-        except Exception as e:
-            flash(f"Error sending OTP email: {e}", "error")
-            return redirect(url_for('signup'))
-        flash("OTP sent to your email. Please verify.", "success")
-        return redirect(url_for('verify_signup_otp'))
-    return render_template('signup.html', hide_signin_btn=True)
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -322,6 +320,7 @@ def dashboard():
 
         student = StudentInput.query.filter_by(email=email).order_by(StudentInput.id.desc()).first()
 
+# <--Profile Summary -->
         profile_summary = None
         if student:
             profile_summary = {
@@ -335,8 +334,9 @@ def dashboard():
                 "class_rank": student.class_rank,
             }
 
+# <--Performance Summary -->
         performance_summary = None
-        ai_summary = None  # <-- Add this
+        ai_summary = None
 
         if student:
             subjects = json.loads(student.subjects) if student.subjects else {}
@@ -431,7 +431,7 @@ def dashboard():
             email=email,
             profile_summary=profile_summary,
             performance_summary=performance_summary,
-            ai_summary=ai_summary,  # <-- Pass to template
+            ai_summary=ai_summary,  
             hide_signin_btn=True
         )
     else:
@@ -746,7 +746,7 @@ def ai_prediction():
     except Exception:
         avg_marks = 0
 
-    # Dummy prediction logic (simple formula)
+    # Dummy prediction logic (simple formula)   , it will be replaced with a real ML model in future
     predicted_score = (
         (avg_marks * 0.5) +
         (student.attendance or 0) * 0.2 +
@@ -849,3 +849,7 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Create database tables
     app.run(debug=True)
+
+# Deployment Note ---->>>
+    ### Note: Deployment will require some charges like Heroku, AWS, etc. ### , It will be deployed on proffesor"s Advice later
+    # For now, it is running locally for testing and development purposes.
