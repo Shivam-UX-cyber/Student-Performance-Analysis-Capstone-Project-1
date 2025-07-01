@@ -69,28 +69,34 @@
                     college</option>
             </select>
 
-
             <!-- Academic Details -->
             <h2>📚 Academic Details</h2>
             <!-- Subjects & Marks -->
             <div style="margin-bottom:18px;">
                 <h3 style="margin-bottom:6px;">Subjects & Marks:</h3>
-                <div id="subjects-list">
-                    {% if student and student.subjects %}
-                    {% for subject, mark in student.subjects.items() %}
-                    <div class="subject-row" style="margin-bottom:8px;">
-                        <input type="text" name="subject_names[]" value="{{ subject }}" placeholder="Subject Name"
-                            required style="width:180px; margin-right:8px;">
-                        <input type="number" name="subject_marks[]" value="{{ mark }}" min="0" max="100"
-                            placeholder="Marks" required style="width:100px;" class="dynamic-marks">
-                        <button type="button" class="remove-subject-btn" style="margin-left:8px;">❌</button>
+
+                <!-- Subject Section Title -->
+                <h4 id="subject-section-title"></h4>
+
+                <!-- Dynamic Subjects Section -->
+                <div id="dynamic-subjects-section" style="display:none;">
+                    <div id="subjects-list">
+                        {% if student and student.subjects %}
+                        {% for subject, mark in student.subjects.items() %}
+                        <div class="subject-row" style="margin-bottom:8px;">
+                            <input type="text" name="subject_names[]" value="{{ subject }}" placeholder="Subject Name"
+                                required style="width:180px; margin-right:8px;">
+                            <input type="number" name="subject_marks[]" value="{{ mark }}" min="0" max="100"
+                                placeholder="Marks" required style="width:100px;" class="dynamic-marks">
+                            <button type="button" class="remove-subject-btn" style="margin-left:8px;">❌</button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
                     </div>
-                    {% endfor %}
-                    {% endif %}
+                    <button type="button" id="add-subject-btn" style="margin-top:10px;">➕ Add Subject</button>
+                    <label style="margin-top:10px;">Average Marks (auto-calculated):</label>
+                    <input type="number" name="dynamic_avg" readonly id="dynamic-avg-marks">
                 </div>
-                <button type="button" id="add-subject-btn" style="margin-top:10px;">➕ Add Subject</button>
-                <label style="margin-top:10px;">Average Marks (auto-calculated):</label>
-                <input type="number" name="dynamic_avg" readonly id="dynamic-avg-marks">
             </div>
 
             <!-- CPI/CGPA for college streams only -->

@@ -39,6 +39,7 @@ function showSubjectsSection(val) {
 
 document.getElementById('education_level').addEventListener('change', function () {
     showSubjectsSection(this.value);
+    toggleCpiCgpaBlock();
 });
 
 // Add subject field dynamically
@@ -85,7 +86,20 @@ function calcDynamicAvg() {
     document.getElementById('dynamic-avg-marks').value = avg;
 }
 
+// Show/hide CPI/CGPA field based on education level
+function toggleCpiCgpaBlock() {
+    var edu = document.getElementById('education_level');
+    var cpiBlock = document.getElementById('cpi-cgpa-block');
+    if (!edu || !cpiBlock) return;
+    if (edu.value === 'school' || edu.value === '') {
+        cpiBlock.style.display = 'none';
+    } else {
+        cpiBlock.style.display = 'block';
+    }
+}
+
 // On page load: attach events to pre-filled fields and remove buttons
+// Run on page load
 window.onload = function () {
     let educationLevel = document.getElementById('education_level').value;
     showSubjectsSection(educationLevel);
@@ -100,25 +114,7 @@ window.onload = function () {
 
     // Also recalculate average on load
     calcDynamicAvg();
-};
 
-// Show/hide CPI/CGPA field based on education level
-function toggleCpiCgpaBlock() {
-    var edu = document.getElementById('education_level');
-    var cpiBlock = document.getElementById('cpi-cgpa-block');
-    if (!edu || !cpiBlock) return;
-    if (edu.value === 'school' || edu.value === '') {
-        cpiBlock.style.display = 'none';
-    } else {
-        cpiBlock.style.display = 'block';
-    }
-}
-
-// Run on page load
-window.onload = function () {
+    // Show/hide CPI/CGPA block
     toggleCpiCgpaBlock();
-    // ...other onload code...
 };
-
-// Run when education level changes
-document.getElementById('education_level').addEventListener('change', toggleCpiCgpaBlock);
