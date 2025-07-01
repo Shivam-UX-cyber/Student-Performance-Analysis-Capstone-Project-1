@@ -689,8 +689,15 @@ def performance_analysis():
     else:
         lifestyle_label = "Needs Attention"
 
+    def is_participating(val):
+        return val and str(val).strip().lower() not in ['no', 'none', '']
+
     # Extracurricular Section
-    if student_input.clubs or student_input.volunteer or student_input.sports:
+    if (
+    is_participating(student_input.clubs) or
+    is_participating(student_input.volunteer) or
+    is_participating(student_input.sports)
+    ):
         extra_label = "Active"
     else:
         extra_label = "Consider Participating"
@@ -766,8 +773,9 @@ def ai_prediction():
         suggestions.append("Reduce your screen time to less than 4 hours daily.")
     if (student.stress or '').lower() == 'high':
         suggestions.append("Manage your stress levels through relaxation techniques.")
-    if (student.cpi_cgpa or 0) < 6:
-        suggestions.append("Focus on improving your CPI/CGPA to above 6.")
+    if student.education_level and student.education_level.lower() != 'school':
+        if (student.cpi_cgpa or 0) < 6:
+            suggestions.append("Focus on improving your CPI/CGPA to above 6.")
     if (student.attendance or 0) < 75:
         suggestions.append("Improve your attendance for better results.")
     if (student.backlogs or 0) > 0:
