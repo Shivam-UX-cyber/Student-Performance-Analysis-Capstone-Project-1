@@ -395,7 +395,15 @@ def dashboard():
                 lifestyle_label = "Needs Attention"
 
             # Extracurricular Section
-            if student.clubs or student.volunteer or student.sports:
+            def is_participating(val):
+                return val and str(val).strip().lower() not in ['no', 'none', '']
+
+            # Check if the student is participating in any extracurricular activities
+            if (
+            is_participating(student.clubs) or
+            is_participating(student.volunteer) or
+            is_participating(student.sports)
+            ):
                 extra_label = "Active"
             else:
                 extra_label = "Consider Participating"
